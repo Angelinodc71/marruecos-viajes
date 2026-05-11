@@ -9,6 +9,10 @@ import { ImageGallery } from "@/components/site/ImageGallery";
 import { ShareButton } from "@/components/site/ShareButton";
 import { CamelIcon, ColumnIcon, LanternIcon, ShieldKeyIcon, StarTileIcon } from "@/components/site/icons";
 import { useFormatPrice } from "@/lib/format";
+import { CustomSelect } from "@/components/site/CustomSelect";
+import { CustomDatePicker } from "@/components/site/CustomDatePicker";
+import { useEffect, useState } from "react";
+import { useBookingStore } from "@/lib/booking-store";
 
 const itineraryKeys = [
   { day: 1, t: { es: ["Llegada a Marrakech", "Recogida en aeropuerto y traslado a riad. Cena de bienvenida."], en: ["Arrival in Marrakech", "Airport pickup and transfer to riad. Welcome dinner."], fr: ["Arrivée à Marrakech", "Accueil à l'aéroport et transfert au riad. Dîner de bienvenue."] } },
@@ -21,6 +25,9 @@ const itineraryKeys = [
 export default function PackDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
+  const { people, date, update } = useBookingStore();
+  const dateValue = date ? new Date(date) : null;
+
   const pack = packs.find((p) => p.slug === slug);
   if (!pack) notFound();
 
@@ -98,20 +105,33 @@ export default function PackDetailPage() {
     },
   ];
 
+  useEffect(() => {
+    update({ itemName: name, itemType: "pack", packSlug: pack.slug });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pack.slug]);
+
   return (
     <>
       <section className="container-page pt-8 pb-4">
-        <nav className="text-xs text-muted-foreground mb-3">
-          <Link href="/" className="hover:text-terracotta">{t("nav.inicio")}</Link> ›{" "}
-          <Link href="/packs" className="hover:text-terracotta">{t("nav.packs")}</Link> ›{" "}
-          <span className="text-foreground">{name}</span>
+        <nav className="breadcrumb mb-3">
+          <span className="inline-flex items-center gap-1.5">
+            <Link href="/">{t("nav.inicio")}</Link>
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <svg className="h-3.5 w-3.5" style={{ color: "var(--border)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6"/></svg>
+            <Link href="/packs">{t("nav.packs")}</Link>
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <svg className="h-3.5 w-3.5" style={{ color: "var(--border)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6"/></svg>
+            <span className="breadcrumb-current">{name}</span>
+          </span>
         </nav>
       </section>
 
       <ImageGallery images={pack.gallery} title={name} />
 
-      <section className="container-page grid lg:grid-cols-[1.4fr_1fr] gap-10 pt-10 pb-20">
-        <div>
+      <section className="container-page grid lg:grid-cols-[1.4fr_1fr] gap-8 pt-10 pb-20">
+        <div className="min-w-0 overflow-hidden">
           <h1 className="font-display text-4xl md:text-5xl text-primary animate-fade-up">{name}</h1>
           <p className="mt-2 text-muted-foreground inline-flex items-center gap-1.5 animate-fade-up delay-100">
             <MapPin className="h-4 w-4" /> {t(`city.${pack.city}` as const, { defaultValue: pack.city })}
@@ -119,36 +139,42 @@ export default function PackDetailPage() {
           <DetailTabs sections={tabSections} />
         </div>
 
-        <aside className="lg:sticky lg:top-24 self-start">
+        <aside className="lg:sticky lg:top-24 self-start w-full min-w-0">
           <div className="rounded-2xl border border-border bg-card p-6 shadow-elegant">
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{t("detail.from")}</p>
             <p className="font-display text-4xl text-terracotta leading-none">{formatPrice(pack.price)}</p>
             <p className="text-xs text-muted-foreground mt-1">{t("detail.perPerson")}</p>
 
-            <div className="mt-5 space-y-3">
-              <label className="block text-xs uppercase tracking-[0.2em] text-muted-foreground">{t("detail.people")}</label>
-              <select className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm">
-                <option>{t("detail.p1")}</option>
-                <option>{t("detail.p2")}</option>
-                <option>{t("detail.p3")}</option>
-                <option>{t("detail.p4")}</option>
-              </select>
-              <label className="block text-xs uppercase tracking-[0.2em] text-muted-foreground mt-3">{t("detail.date")}</label>
-              <div className="flex items-center gap-2 h-11 rounded-md border border-input bg-background px-3 text-sm focus-within:border-terracotta">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-                <input type="date" min={new Date().toISOString().slice(0, 10)} className="flex-1 bg-transparent outline-none" aria-label={t("detail.date")} />
-              </div>
+            <div className="mt-5 space-y-4">
+              <CustomSelect
+                label={t("detail.people")}
+                value={people}
+                onChange={(v) => update({ people: v })}
+                options={[
+                  { value: "1", label: t("detail.p1") },
+                  { value: "2", label: t("detail.p2") },
+                  { value: "3", label: t("detail.p3") },
+                  { value: "4", label: t("detail.p4") },
+                ]}
+              />
+              <CustomDatePicker
+                label={t("detail.date")}
+                value={dateValue}
+                onChange={(d) => update({ date: d.toISOString() })}
+                minDate={new Date()}
+                lng={lng}
+              />
             </div>
 
-            <Link href="/contacto" className="mt-5 inline-flex w-full h-12 items-center justify-center rounded-md bg-terracotta text-sm font-medium text-terracotta-foreground transition-all hover:brightness-110 hover:-translate-y-0.5">
+            <Link href="/contacto" className="btn-primary mt-5 w-full h-12 rounded-lg text-base font-semibold">
               {t("cta.reservar")}
             </Link>
             <ShareButton title={name} />
 
-            <ul className="mt-6 space-y-2 text-xs text-muted-foreground">
-              <li className="flex items-center gap-2"><StarTileIcon className="h-3.5 w-3.5 text-terracotta" /> {t("detail.freeCancel")}</li>
-              <li className="flex items-center gap-2"><ShieldKeyIcon className="h-3.5 w-3.5 text-terracotta" /> {t("detail.instantConfirm")}</li>
-              <li className="flex items-center gap-2"><ColumnIcon className="h-3.5 w-3.5 text-terracotta" /> {t("detail.securePay")}</li>
+            <ul className="mt-6 space-y-2.5 text-xs text-muted-foreground">
+              <li className="flex items-center gap-2"><StarTileIcon className="h-3.5 w-3.5 text-terracotta shrink-0" /> {t("detail.freeCancel")}</li>
+              <li className="flex items-center gap-2"><ShieldKeyIcon className="h-3.5 w-3.5 text-terracotta shrink-0" /> {t("detail.instantConfirm")}</li>
+              <li className="flex items-center gap-2"><ColumnIcon className="h-3.5 w-3.5 text-terracotta shrink-0" /> {t("detail.securePay")}</li>
             </ul>
           </div>
         </aside>

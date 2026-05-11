@@ -12,8 +12,12 @@ const LANGS = [
 export function LanguageSwitcher() {
   const { i18n } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const current = LANGS.find((l) => l.code === i18n.resolvedLanguage) ?? LANGS[0];
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
@@ -23,6 +27,10 @@ export function LanguageSwitcher() {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
+  const current = mounted
+    ? (LANGS.find((l) => l.code === i18n.resolvedLanguage) ?? LANGS[0])
+    : LANGS[0];
+
   return (
     <div ref={ref} className="relative">
       <button
@@ -30,11 +38,14 @@ export function LanguageSwitcher() {
         onClick={() => setOpen((o) => !o)}
         className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 h-9 text-xs font-medium text-foreground/80 hover:border-terracotta hover:text-terracotta transition"
         aria-label="Cambiar idioma"
+        suppressHydrationWarning
       >
         <Globe className="h-3.5 w-3.5" />
-        <span className="uppercase">{current.code}</span>
+        <span className="uppercase" suppressHydrationWarning>
+          {mounted ? current.code : "es"}
+        </span>
       </button>
-      {open && (
+      {open && mounted && (
         <div className="absolute right-0 mt-2 w-44 rounded-md border border-border bg-popover shadow-elegant overflow-hidden z-50">
           {LANGS.map((l) => (
             <button
@@ -43,7 +54,10 @@ export function LanguageSwitcher() {
               onClick={() => { i18n.changeLanguage(l.code); setOpen(false); }}
               className="flex w-full items-center justify-between px-3 py-2 text-sm hover:bg-accent"
             >
-              <span className="flex items-center gap-2"><span>{l.flag}</span>{l.label}</span>
+              <span className="flex items-center gap-2">
+                <span>{l.flag}</span>
+                {l.label}
+              </span>
               {l.code === current.code && <Check className="h-4 w-4 text-terracotta" />}
             </button>
           ))}

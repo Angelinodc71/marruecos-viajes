@@ -1,14 +1,22 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import "@/lib/i18n";
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [ready, setReady] = useState(false);
-
+function LangSync() {
+  const { i18n } = useTranslation();
   useEffect(() => {
-    setReady(true);
-  }, []);
+    const lng = i18n.resolvedLanguage ?? "es";
+    document.documentElement.lang = lng;
+  }, [i18n.resolvedLanguage]);
+  return null;
+}
 
-  // Render immediately to avoid hydration mismatch; i18n initializes client-side
-  return <>{children}</>;
+export function I18nProvider({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <LangSync />
+      {children}
+    </>
+  );
 }
