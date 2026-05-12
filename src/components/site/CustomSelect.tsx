@@ -69,7 +69,6 @@ export function CustomSelect({
           </span>
         </div>
 
-        {/* Versión desktop: botón + dropdown custom */}
         <button
           ref={buttonRef}
           type="button"
