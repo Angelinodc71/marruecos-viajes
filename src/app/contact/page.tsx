@@ -61,6 +61,11 @@ export default function ContactoPage() {
         }),
       });
 
+      if (res.status === 429) {
+        setError(true);
+        return;
+      }
+
       if (!res.ok) throw new Error();
       setSent(true);
       clear();
@@ -189,7 +194,7 @@ export default function ContactoPage() {
 
           {error && (
             <p className="text-sm font-medium text-red-500 animate-fade-up">
-              Ha ocurrido un error. Inténtalo de nuevo.
+              {t("contact.errorMessage")}
             </p>
           )}
 

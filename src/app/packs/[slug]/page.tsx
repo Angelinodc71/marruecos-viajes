@@ -34,7 +34,7 @@ export default function PackDetailPage() {
 
   const { t, i18n } = useTranslation();
   const formatPrice = useFormatPrice();
-  const lng = (i18n.resolvedLanguage ?? "es") as "es" | "en" | "fr";
+  const lng = (i18n.resolvedLanguage ?? "es") as "es" | "en" | "fr" | "de" | "it";
   const name = t(`packCatalog.${pack.slug}.name`);
   const short = t(`packCatalog.${pack.slug}.short`);
 

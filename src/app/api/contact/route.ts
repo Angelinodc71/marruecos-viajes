@@ -1,8 +1,35 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
 
+const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
+const LIMIT = 3;
+const WINDOW = 60 * 60 * 1000;
+
 export async function POST(req: Request) {
-  const resend = new Resend(process.env.RESEND_API_KEY);  // ← dentro de la función
+  const ip = req.headers.get("cf-connecting-ip") ?? 
+              req.headers.get("x-forwarded-for") ?? 
+              "unknown";
+  
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+
+  if (record) {
+    if (now - record.timestamp < WINDOW) {
+      if (record.count >= LIMIT) {
+        return NextResponse.json(
+          { ok: false, error: "too_many_requests" },
+          { status: 429 }
+        );
+      }
+      record.count++;
+    } else {
+      rateLimitMap.set(ip, { count: 1, timestamp: now });
+    }
+  } else {
+    rateLimitMap.set(ip, { count: 1, timestamp: now });
+  }
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
   try {
     const body = await req.json();

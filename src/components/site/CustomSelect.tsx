@@ -10,7 +10,6 @@ export function CustomSelect({
   onChange,
   label,
   icon,
-  placeholder,
   variant = "default",
 }: {
   options: Option[];

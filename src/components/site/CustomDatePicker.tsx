@@ -11,14 +11,16 @@ const DAYS_EN = ["M","T","W","T","F","S","S"];
 const DAYS_FR = ["L","M","M","J","V","S","D"];
 
 function getMonths(lng: string) {
+  if (lng === "es") return MONTHS_ES;
   if (lng === "en") return MONTHS_EN;
   if (lng === "fr") return MONTHS_FR;
-  return MONTHS_ES;
+  return MONTHS_EN;
 }
 function getDays(lng: string) {
+  if (lng === "es") return DAYS_ES;
   if (lng === "en") return DAYS_EN;
   if (lng === "fr") return DAYS_FR;
-  return DAYS_ES;
+  return DAYS_EN;
 }
 function formatDate(date: Date, lng: string) {
   const months = getMonths(lng);
