@@ -41,7 +41,7 @@ function ExperienciasContent() {
           {categories.map((c) => (
             <button
               key={c}
-              onClick={() => router.push(`/experiencias?cat=${c}`)}
+              onClick={() => router.push(`/experiences?cat=${c}`)}
               className={`h-10 px-5 rounded-full text-sm transition ${cat === c ? "bg-primary text-primary-foreground" : "bg-card border border-border hover:border-terracotta hover:text-terracotta"}`}
             >
               {labelFor(c)}
@@ -59,7 +59,7 @@ function ExperienciasContent() {
               const name = t(`expCatalog.${e.slug}.name`);
               const short = t(`expCatalog.${e.slug}.short`);
               return (
-                <Link href={`/experiencias/${e.slug}`} key={e.slug} className="group block rounded-xl overflow-hidden bg-card border border-border shadow-soft hover:shadow-elegant transition-all">
+                <Link href={`/experiences/${e.slug}`} key={e.slug} className="group block rounded-xl overflow-hidden bg-card border border-border shadow-soft hover:shadow-elegant transition-all">
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <img src={e.image} alt={name} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     <span className="absolute top-3 left-3 bg-cream/95 text-primary text-[10px] uppercase tracking-widest px-2.5 py-1 rounded">

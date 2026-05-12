@@ -79,7 +79,7 @@ export default function AboutPage() {
         <div className="rounded-3xl bg-primary text-primary-foreground p-10 md:p-14 text-center">
           <h3 className="font-display text-3xl md:text-4xl text-balance">{t("about.ctaTitle")}</h3>
           <p className="mt-3 text-cream/85 max-w-xl mx-auto">{t("about.ctaText")}</p>
-          <Link href="/contacto" className="mt-6 inline-flex h-12 items-center rounded-md bg-terracotta px-7 text-sm font-medium text-terracotta-foreground hover:brightness-110">
+          <Link href="/contact" className="mt-6 inline-flex h-12 items-center rounded-md bg-terracotta px-7 text-sm font-medium text-terracotta-foreground hover:brightness-110">
             {t("cta.planificar")}
           </Link>
         </div>

@@ -96,7 +96,7 @@ export default function StayDetailPage() {
           </span>
           <span className="inline-flex items-center gap-1.5">
             <svg className="h-3.5 w-3.5" style={{ color: "var(--border)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6"/></svg>
-            <Link href="/alojamientos">{t("nav.alojamientos")}</Link>
+            <Link href="/accommodations">{t("nav.alojamientos")}</Link>
           </span>
           <span className="inline-flex items-center gap-1.5">
             <svg className="h-3.5 w-3.5" style={{ color: "var(--border)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6"/></svg>
@@ -121,7 +121,7 @@ export default function StayDetailPage() {
               {others.map((e) => {
                 const eName = t(`expCatalog.${e.slug}.name`);
                 return (
-                  <Link href={`/experiencias/${e.slug}`} key={e.slug} className="rounded-xl overflow-hidden border border-border bg-card hover:shadow-soft transition">
+                  <Link href={`/experiences/${e.slug}`} key={e.slug} className="rounded-xl overflow-hidden border border-border bg-card hover:shadow-soft transition">
                     <div className="aspect-[4/3] relative overflow-hidden">
                       <img src={e.image} alt={eName} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
                     </div>
@@ -162,7 +162,7 @@ export default function StayDetailPage() {
               />
             </div>
 
-            <Link href="/contacto" className="btn-primary mt-5 w-full h-12 rounded-lg text-base font-semibold">
+            <Link href="/contact" className="btn-primary mt-5 w-full h-12 rounded-lg text-base font-semibold">
               {t("cta.reservar")}
             </Link>
             <ShareButton title={name} />

@@ -42,7 +42,7 @@ function AlojamientosContent() {
   const buildUrl = (params: Record<string, string | number>) => {
     const p = new URLSearchParams();
     Object.entries(params).forEach(([k, v]) => p.set(k, String(v)));
-    return `/alojamientos?${p.toString()}`;
+    return `/accommodations?${p.toString()}`;
   };
 
   const apply = () => router.push(buildUrl(draft));
@@ -147,7 +147,7 @@ function AlojamientosContent() {
                   ))}
                 </div>
                 <div className="mt-auto pt-2">
-                  <Link href={`/alojamientos/${s.slug}`} className="inline-flex h-10 items-center rounded-md bg-terracotta px-5 text-sm font-medium text-terracotta-foreground hover:brightness-110">
+                  <Link href={`/accommodations/${s.slug}`} className="inline-flex h-10 items-center rounded-md bg-terracotta px-5 text-sm font-medium text-terracotta-foreground hover:brightness-110">
                     {t("cta.verDetalles")}
                   </Link>
                 </div>

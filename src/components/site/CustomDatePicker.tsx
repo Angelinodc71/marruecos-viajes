@@ -176,20 +176,32 @@ export function CustomDatePicker({
   }
 
   return (
-    <div ref={ref} className="relative w-full">
-      {label && <span className="field-label">{label}</span>}
-      <button
-        ref={buttonRef}
-        type="button"
-        onClick={handleOpen}
-        className="w-full h-11 rounded-xl border-[1.5px] border-border bg-card px-3.5 text-sm text-left flex items-center gap-2.5 transition-all hover:border-terracotta/60 focus:outline-none focus:border-terracotta"
-      >
-        <CalendarDays className="h-4 w-4 text-muted-foreground shrink-0" />
-        <span className={value ? "text-foreground" : "text-muted-foreground"}>
-          {value ? formatDate(value, lng) : label ?? "Selecciona fecha"}
-        </span>
-      </button>
-      {open && calendarPanel}
-    </div>
-  );
+  <div ref={ref} className="relative w-full">
+    {label && <span className="field-label">{label}</span>}
+    <button
+      ref={buttonRef}
+      type="button"
+      onClick={handleOpen}
+      className="w-full h-11 rounded-xl border-[1.5px] border-border bg-card px-3.5 text-sm text-left flex items-center gap-2.5 transition-all hover:border-terracotta/60 focus:outline-none focus:border-terracotta"
+    >
+      <CalendarDays className="h-4 w-4 text-muted-foreground shrink-0" />
+      <span className={value ? "text-foreground" : "text-muted-foreground"}>
+        {value ? formatDate(value, lng) : label ?? "Selecciona fecha"}
+      </span>
+    </button>
+
+    <input
+      type="date"
+      value={value ? value.toISOString().slice(0, 10) : ""}
+      min={min.toISOString().slice(0, 10)}
+      onChange={(e) => e.target.value && onChange(new Date(e.target.value + "T00:00:00"))}
+      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer md:hidden"
+    />
+
+    {open && (
+      <div className={`hidden md:block absolute z-50 ...`}>
+      </div>
+    )}
+  </div>
+);
 }

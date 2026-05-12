@@ -86,7 +86,7 @@ export default function ExperienceDetailPage() {
           </span>
           <span className="inline-flex items-center gap-1.5">
             <svg className="h-3.5 w-3.5" style={{ color: "var(--border)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6"/></svg>
-            <Link href="/experiencias">{t("nav.experiencias")}</Link>
+            <Link href="/experiences">{t("nav.experiencias")}</Link>
           </span>
           <span className="inline-flex items-center gap-1.5">
             <svg className="h-3.5 w-3.5" style={{ color: "var(--border)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6"/></svg>
@@ -136,7 +136,7 @@ export default function ExperienceDetailPage() {
               />
             </div>
 
-            <Link href="/contacto" className="btn-primary mt-5 w-full h-12 rounded-lg text-base font-semibold">
+            <Link href="/contact" className="btn-primary mt-5 w-full h-12 rounded-lg text-base font-semibold">
               {t("cta.reservar")}
             </Link>
             <ShareButton title={name} />

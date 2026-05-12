@@ -152,17 +152,23 @@ const fr = {
 
 if (!i18n.isInitialized) {
   i18n
-    .use(LanguageDetector)
     .use(initReactI18next)
     .init({
       resources: { es: { translation: es }, en: { translation: en }, fr: { translation: fr } },
+      lng: "es",
       fallbackLng: "es",
       interpolation: { escapeValue: false },
-      detection: {
-        order: ["localStorage", "navigator"],
-        caches: ["localStorage"],
-      },
     });
 }
-
+ 
+const SUPPORTED = ["es", "en", "fr"];
+ 
+export function detectClientLanguage(): string {
+  if (typeof window === "undefined") return "es";
+  const stored = localStorage.getItem("i18nextLng");
+  if (stored && SUPPORTED.includes(stored)) return stored;
+  const nav = navigator.language?.slice(0, 2);
+  return SUPPORTED.includes(nav) ? nav : "es";
+}
+ 
 export default i18n;

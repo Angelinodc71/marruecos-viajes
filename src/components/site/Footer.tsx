@@ -11,7 +11,7 @@ export function Footer() {
       <div className="relative bg-primary text-primary-foreground">
         <div className="container-page flex flex-col md:flex-row items-center justify-between gap-4 py-6">
           <p className="font-display text-xl md:text-2xl">{t("footer.tagline")}</p>
-          <Link href="/contacto" className="inline-flex h-11 items-center rounded-md bg-terracotta px-6 text-sm font-medium text-terracotta-foreground hover:brightness-110">
+          <Link href="/contact" className="inline-flex h-11 items-center rounded-md bg-terracotta px-6 text-sm font-medium text-terracotta-foreground hover:brightness-110">
             {t("cta.planificar")}
           </Link>
         </div>
@@ -37,10 +37,10 @@ export function Footer() {
         <div>
           <h4 className="text-xs uppercase tracking-[0.2em] text-terracotta mb-4">{t("footer.destinos")}</h4>
           <ul className="space-y-2 text-sm">
-            <li><Link href="/destinos" className="hover:text-terracotta">{t("destNames.marrakech")}</Link></li>
-            <li><Link href="/destinos" className="hover:text-terracotta">{t("destNames.fez")}</Link></li>
-            <li><Link href="/destinos" className="hover:text-terracotta">{t("destNames.chefchaouen")}</Link></li>
-            <li><Link href="/destinos" className="hover:text-terracotta">{t("destNames.sahara")}</Link></li>
+            <li><Link href="/destinations" className="hover:text-terracotta">{t("destNames.marrakech")}</Link></li>
+            <li><Link href="/destinations" className="hover:text-terracotta">{t("destNames.fez")}</Link></li>
+            <li><Link href="/destinations" className="hover:text-terracotta">{t("destNames.chefchaouen")}</Link></li>
+            <li><Link href="/destinations" className="hover:text-terracotta">{t("destNames.sahara")}</Link></li>
           </ul>
         </div>
 
@@ -48,10 +48,10 @@ export function Footer() {
           <h4 className="text-xs uppercase tracking-[0.2em] text-terracotta mb-4">{t("footer.paginas")}</h4>
           <ul className="space-y-2 text-sm">
             <li><Link href="/packs" className="hover:text-terracotta">{t("nav.packs")}</Link></li>
-            <li><Link href="/alojamientos" className="hover:text-terracotta">{t("nav.alojamientos")}</Link></li>
-            <li><Link href="/experiencias" className="hover:text-terracotta">{t("nav.experiencias")}</Link></li>
-            <li><Link href="/sobre-nosotros" className="hover:text-terracotta">{t("nav.sobre")}</Link></li>
-            <li><Link href="/contacto" className="hover:text-terracotta">{t("nav.contacto")}</Link></li>
+            <li><Link href="/accommodations" className="hover:text-terracotta">{t("nav.alojamientos")}</Link></li>
+            <li><Link href="/experiences" className="hover:text-terracotta">{t("nav.experiencias")}</Link></li>
+            <li><Link href="/about-us" className="hover:text-terracotta">{t("nav.sobre")}</Link></li>
+            <li><Link href="/contact" className="hover:text-terracotta">{t("nav.contacto")}</Link></li>
           </ul>
         </div>
 

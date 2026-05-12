@@ -45,6 +45,7 @@ export function CustomSelect({
     }
     setOpen((o) => !o);
   };
+  
 
   if (variant === "hero") {
     return (
@@ -99,8 +100,18 @@ export function CustomSelect({
         <ChevronDown className={`h-4 w-4 text-muted-foreground shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
       </button>
 
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer md:hidden"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>{o.label}</option>
+        ))}
+      </select>
+
       {open && (
-        <div className={`absolute z-50 w-full rounded-xl border border-border bg-card shadow-elegant overflow-hidden animate-scale-in ${dropUp ? "bottom-full mb-1.5" : "top-full mt-1.5"}`}>
+        <div className={`hidden md:block absolute z-50 w-full rounded-xl border border-border bg-card shadow-elegant overflow-hidden animate-scale-in ${dropUp ? "bottom-full mb-1.5" : "top-full mt-1.5"}`}>
           {options.map((o) => (
             <button
               key={o.value}

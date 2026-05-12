@@ -16,12 +16,12 @@ export function Header() {
   }, []);
 
   const nav = [
-    { to: "/destinos", label: t("nav.destinos") },
+    { to: "/destinations", label: t("nav.destinos") },
     { to: "/packs", label: t("nav.packs") },
-    { to: "/alojamientos", label: t("nav.alojamientos") },
-    { to: "/experiencias", label: t("nav.experiencias") },
-    { to: "/sobre-nosotros", label: t("nav.sobre") },
-    { to: "/contacto", label: t("nav.contacto") },
+    { to: "/accommodations", label: t("nav.alojamientos") },
+    { to: "/experiences", label: t("nav.experiencias") },
+    { to: "/about-us", label: t("nav.sobre") },
+    { to: "/contact", label: t("nav.contacto") },
   ];
 
   return (
@@ -54,7 +54,7 @@ export function Header() {
           </a>
           <LanguageSwitcher />
           <Link
-            href="/contacto"
+            href="/contact"
             suppressHydrationWarning
             className="inline-flex h-10 items-center rounded-lg bg-terracotta px-5 text-sm font-semibold text-terracotta-foreground transition-all hover:brightness-110 hover:-translate-y-0.5 shadow-soft"
           >
@@ -100,7 +100,7 @@ export function Header() {
               <LanguageSwitcher />
             </div>
             <Link
-              href="/contacto"
+              href="/contact"
               onClick={() => setOpen(false)}
               className="mt-4 inline-flex h-11 items-center justify-center rounded-lg bg-terracotta px-5 text-sm font-semibold text-terracotta-foreground hover:brightness-110 transition"
             >

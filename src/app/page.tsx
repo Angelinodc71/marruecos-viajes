@@ -118,7 +118,7 @@ export default function HomePage() {
           {destinations.map((d, i) => (
             <Link
               key={d.slug}
-              href="/destinos"
+              href="/destinations"
               className="group relative aspect-[3/4] overflow-hidden rounded-xl shadow-soft hover-lift animate-fade-up"
               style={{ animationDelay: `${i * 80}ms` }}
             >
@@ -201,7 +201,7 @@ export default function HomePage() {
             <p className="text-xs uppercase tracking-[0.3em] text-cream/80">{t("sections.ctaEyebrow")}</p>
             <h3 className="font-display text-4xl md:text-5xl mt-3 text-balance">{t("sections.ctaTitle")}</h3>
             <p className="mt-4 text-cream/90">{t("sections.ctaText")}</p>
-            <Link href="/contacto" className="mt-7 inline-flex items-center gap-2 h-12 rounded-lg bg-terracotta px-6 text-sm font-semibold text-terracotta-foreground hover:brightness-110">
+            <Link href="/contact" className="mt-7 inline-flex items-center gap-2 h-12 rounded-lg bg-terracotta px-6 text-sm font-semibold text-terracotta-foreground hover:brightness-110">
               {t("cta.contactar")} <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

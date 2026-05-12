@@ -166,7 +166,7 @@ export default function PackDetailPage() {
               />
             </div>
 
-            <Link href="/contacto" className="btn-primary mt-5 w-full h-12 rounded-lg text-base font-semibold">
+            <Link href="/contact" className="btn-primary mt-5 w-full h-12 rounded-lg text-base font-semibold">
               {t("cta.reservar")}
             </Link>
             <ShareButton title={name} />

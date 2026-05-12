@@ -123,9 +123,9 @@ export default function DestinosPage() {
               ))}
             </DestSection>
 
-            <DestSection title={t("destinos.staysHere")} viewAll={t("destinos.viewAll")} viewAllTo="/alojamientos" empty={t("destinos.noItems")} count={filtered.stays.length}>
+            <DestSection title={t("destinos.staysHere")} viewAll={t("destinos.viewAll")} viewAllTo="/accommodations" empty={t("destinos.noItems")} count={filtered.stays.length}>
               {filtered.stays.map((s) => (
-                <Link key={s.slug} href={`/alojamientos/${s.slug}`} className="group block rounded-xl overflow-hidden bg-background border border-border shadow-soft hover:shadow-elegant transition">
+                <Link key={s.slug} href={`/accommodations/${s.slug}`} className="group block rounded-xl overflow-hidden bg-background border border-border shadow-soft hover:shadow-elegant transition">
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <img src={s.image} alt={t(`stayCatalog.${s.slug}.name`)} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   </div>
@@ -142,9 +142,9 @@ export default function DestinosPage() {
               ))}
             </DestSection>
 
-            <DestSection title={t("destinos.expsHere")} viewAll={t("destinos.viewAll")} viewAllTo="/experiencias" empty={t("destinos.noItems")} count={filtered.experiences.length} last>
+            <DestSection title={t("destinos.expsHere")} viewAll={t("destinos.viewAll")} viewAllTo="/experiences" empty={t("destinos.noItems")} count={filtered.experiences.length} last>
               {filtered.experiences.map((e) => (
-                <Link key={e.slug} href={`/experiencias/${e.slug}`} className="group block rounded-xl overflow-hidden bg-background border border-border shadow-soft hover:shadow-elegant transition">
+                <Link key={e.slug} href={`/experiences/${e.slug}`} className="group block rounded-xl overflow-hidden bg-background border border-border shadow-soft hover:shadow-elegant transition">
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <img src={e.image} alt={t(`expCatalog.${e.slug}.name`)} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   </div>
