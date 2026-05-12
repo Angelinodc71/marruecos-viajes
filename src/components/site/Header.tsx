@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Menu, X, Phone } from "lucide-react";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { usePathname } from "next/navigation";
 
 export function Header() {
   const { t } = useTranslation();
@@ -24,10 +25,12 @@ export function Header() {
     { to: "/contact", label: t("nav.contacto") },
   ];
 
+  const pathname = usePathname();
+
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/90 backdrop-blur-md">
       <div className="container-page flex h-16 items-center justify-between gap-4 md:h-[4.5rem]">
-        <Link href="/" className="shrink-0 transition-transform duration-300 hover:scale-[1.03]">
+        <Link href="/" onClick={() => pathname !== "/" && setOpen(false)} className="shrink-0 transition-transform duration-300 hover:scale-105">
           <Logo />
         </Link>
 

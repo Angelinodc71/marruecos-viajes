@@ -50,11 +50,31 @@ export function CustomSelect({
   if (variant === "hero") {
     return (
       <div ref={ref} className="relative w-full">
+        {/* Versión móvil: select nativo estilado */}
+        <div className="md:hidden flex items-center gap-3 rounded-xl bg-background border border-border px-4 py-2.5">
+          {icon && <span className="text-terracotta shrink-0">{icon}</span>}
+          <span className="flex-1 min-w-0">
+            <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold">
+              {label}
+            </span>
+            <select
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              className="w-full bg-transparent text-sm text-foreground outline-none appearance-none focus:outline-none focus:ring-0"
+            >
+              {options.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </span>
+        </div>
+
+        {/* Versión desktop: botón + dropdown custom */}
         <button
           ref={buttonRef}
           type="button"
           onClick={handleOpen}
-          className="w-full flex items-center gap-3 rounded-xl bg-background border border-border px-4 py-2.5 hover:border-terracotta/60 transition text-left"
+          className="hidden md:flex w-full items-center gap-3 rounded-xl bg-background border border-border px-4 py-2.5 hover:border-terracotta/60 transition text-left"
         >
           {icon && <span className="text-terracotta shrink-0">{icon}</span>}
           <span className="flex-1 min-w-0">
@@ -69,7 +89,7 @@ export function CustomSelect({
         </button>
 
         {open && (
-          <div className={`absolute z-50 w-full rounded-xl border border-border bg-card shadow-elegant overflow-hidden animate-scale-in ${dropUp ? "bottom-full mb-1.5" : "top-full mt-1.5"}`}>
+          <div className={`hidden md:block absolute z-50 w-full rounded-xl border border-border bg-card shadow-elegant overflow-hidden animate-scale-in ${dropUp ? "bottom-full mb-1.5" : "top-full mt-1.5"}`}>
             {options.map((o) => (
               <button
                 key={o.value}

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 const MONTHS_ES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 const MONTHS_EN = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -29,6 +30,20 @@ function getDaysInMonth(year: number, month: number) {
 function getFirstDayOfMonth(year: number, month: number) {
   const day = new Date(year, month, 1).getDay();
   return day === 0 ? 6 : day - 1;
+}
+
+// Formatea Date a "YYYY-MM-DD" en hora local (sin desfase UTC)
+export function toInputValue(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+// Parsea "YYYY-MM-DD" a Date local (sin desfase UTC)
+function parseLocalDate(str: string): Date {
+  const [y, m, d] = str.split("-").map(Number);
+  return new Date(y, m - 1, d);
 }
 
 export function CustomDatePicker({
@@ -61,7 +76,11 @@ export function CustomDatePicker({
   const days = getDays(lng);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const min = minDate ?? today;
+  const min = minDate
+    ? new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate())
+    : today;
+
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -78,6 +97,11 @@ export function CustomDatePicker({
       setDropUp(spaceBelow < 340);
     }
     setOpen((o) => !o);
+  };
+
+  const handleNativeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.value) return;
+    onChange(parseLocalDate(e.target.value));
   };
 
   const prevMonth = () => setView((v) => v.month === 0 ? { year: v.year - 1, month: 11 } : { ...v, month: v.month - 1 });
@@ -103,13 +127,11 @@ export function CustomDatePicker({
           <ChevronRight className="h-4 w-4" />
         </button>
       </div>
-
       <div className="grid grid-cols-7 mb-1">
         {days.map((d, i) => (
           <div key={i} className="text-center text-[10px] font-semibold uppercase tracking-wide text-muted-foreground py-1">{d}</div>
         ))}
       </div>
-
       <div className="grid grid-cols-7 gap-y-0.5">
         {cells.map((day, i) => {
           if (!day) return <div key={i} />;
@@ -134,11 +156,10 @@ export function CustomDatePicker({
           );
         })}
       </div>
-
       <div className="mt-3 pt-3 border-t border-border flex justify-between items-center">
         <button
           type="button"
-          onClick={() => { onChange(today); setView({ year: today.getFullYear(), month: today.getMonth() }); setOpen(false); }}
+          onClick={() => { onChange(new Date(today.getFullYear(), today.getMonth(), today.getDate())); setView({ year: today.getFullYear(), month: today.getMonth() }); setOpen(false); }}
           className="text-xs text-terracotta font-medium hover:brightness-110"
         >
           {lng === "en" ? "Today" : lng === "fr" ? "Aujourd'hui" : "Hoy"}
@@ -150,7 +171,28 @@ export function CustomDatePicker({
     </div>
   );
 
+  // ── HERO variant ────────────────────────────────────────────────────────────
   if (variant === "hero") {
+    if (isMobile) {
+      return (
+        <div className="flex items-center gap-3 rounded-xl bg-background border border-border px-4 py-2.5 h-full min-h-[56px]">
+          {icon && <span className="text-terracotta shrink-0 flex items-center">{icon}</span>}
+          <div className="flex flex-col flex-1 min-w-0 justify-center">
+            <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold leading-none mb-0.5">
+              {label}
+            </span>
+            <input
+              type="date"
+              value={value ? toInputValue(value) : ""}
+              min={toInputValue(min)}
+              onChange={handleNativeChange}
+              className="w-full bg-transparent text-sm text-foreground outline-none appearance-none focus:outline-none focus:ring-0 [color-scheme:light] p-0 border-0"
+            />
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div ref={ref} className="relative w-full">
         <button
@@ -175,33 +217,40 @@ export function CustomDatePicker({
     );
   }
 
-  return (
-  <div ref={ref} className="relative w-full">
-    {label && <span className="field-label">{label}</span>}
-    <button
-      ref={buttonRef}
-      type="button"
-      onClick={handleOpen}
-      className="w-full h-11 rounded-xl border-[1.5px] border-border bg-card px-3.5 text-sm text-left flex items-center gap-2.5 transition-all hover:border-terracotta/60 focus:outline-none focus:border-terracotta"
-    >
-      <CalendarDays className="h-4 w-4 text-muted-foreground shrink-0" />
-      <span className={value ? "text-foreground" : "text-muted-foreground"}>
-        {value ? formatDate(value, lng) : label ?? "Selecciona fecha"}
-      </span>
-    </button>
-
-    <input
-      type="date"
-      value={value ? value.toISOString().slice(0, 10) : ""}
-      min={min.toISOString().slice(0, 10)}
-      onChange={(e) => e.target.value && onChange(new Date(e.target.value + "T00:00:00"))}
-      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer md:hidden"
-    />
-
-    {open && (
-      <div className={`hidden md:block absolute z-50 ...`}>
+  // ── DEFAULT variant ─────────────────────────────────────────────────────────
+  if (isMobile) {
+    return (
+      <div className="w-full">
+        {label && <span className="field-label">{label}</span>}
+        <div className="flex items-center gap-2.5 h-11 rounded-xl border-[1.5px] border-border bg-card px-3.5">
+          <CalendarDays className="h-4 w-4 text-muted-foreground shrink-0" />
+          <input
+            type="date"
+            value={value ? toInputValue(value) : ""}
+            min={toInputValue(min)}
+            onChange={handleNativeChange}
+            className="w-full bg-transparent text-sm text-foreground outline-none appearance-none focus:outline-none focus:ring-0 [color-scheme:light] p-0 border-0"
+          />
+        </div>
       </div>
-    )}
-  </div>
-);
+    );
+  }
+
+  return (
+    <div ref={ref} className="relative w-full">
+      {label && <span className="field-label">{label}</span>}
+      <button
+        ref={buttonRef}
+        type="button"
+        onClick={handleOpen}
+        className="w-full h-11 rounded-xl border-[1.5px] border-border bg-card px-3.5 text-sm text-left flex items-center gap-2.5 transition-all hover:border-terracotta/60 focus:outline-none focus:border-terracotta"
+      >
+        <CalendarDays className="h-4 w-4 text-muted-foreground shrink-0" />
+        <span className={value ? "text-foreground" : "text-muted-foreground"}>
+          {value ? formatDate(value, lng) : label ?? "Selecciona fecha"}
+        </span>
+      </button>
+      {open && calendarPanel}
+    </div>
+  );
 }

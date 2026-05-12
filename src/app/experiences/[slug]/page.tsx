@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useParams, notFound } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Clock } from "lucide-react";
 import { experiences } from "@/components/site/data";
@@ -13,6 +13,7 @@ import { CustomDatePicker } from "@/components/site/CustomDatePicker";
 import { CamelIcon, HammamIcon, LanternIcon, ShieldKeyIcon, StarTileIcon, TagineIcon } from "@/components/site/icons";
 import { useFormatPrice } from "@/lib/format";
 import { useBookingStore } from "@/lib/booking-store";
+import { getDateValue } from "@/hooks/useDate";
 
 export default function ExperienceDetailPage() {
   const params = useParams();
@@ -27,7 +28,7 @@ export default function ExperienceDetailPage() {
   const short = t(`expCatalog.${exp.slug}.short`);
 
   const { people, date, update } = useBookingStore();
-  const dateValue = date ? new Date(date) : null;
+  const dateValue = getDateValue(date);
 
   const categoryIcon =
     exp.category === "Bienestar" ? <HammamIcon className="h-5 w-5" /> :

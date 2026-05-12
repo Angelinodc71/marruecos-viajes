@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useParams, notFound } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { MapPin } from "lucide-react";
 import { stays, experiences } from "@/components/site/data";
@@ -13,6 +13,7 @@ import { CustomDatePicker } from "@/components/site/CustomDatePicker";
 import { HammamIcon, LanternIcon, ShieldKeyIcon, StarTileIcon, TagineIcon } from "@/components/site/icons";
 import { useFormatPrice } from "@/lib/format";
 import { useBookingStore } from "@/lib/booking-store";
+import { getDateValue } from "@/hooks/useDate";
 
 export default function StayDetailPage() {
   const params = useParams();
@@ -27,7 +28,7 @@ export default function StayDetailPage() {
   const others = experiences.slice(0, 3);
 
   const { people, date, update } = useBookingStore();
-  const dateValue = date ? new Date(date) : null;
+  const dateValue = getDateValue(date);
 
   const tabSections = [
     {

@@ -6,6 +6,7 @@ import { PageHero } from "@/components/site/PageHero";
 import { CustomSelect } from "@/components/site/CustomSelect";
 import { CustomDatePicker } from "@/components/site/CustomDatePicker";
 import { useBookingStore } from "@/lib/booking-store";
+import { toInputValue } from "@/hooks/useDate";
 
 export default function ContactoPage() {
   const { t, i18n } = useTranslation();
@@ -28,10 +29,46 @@ export default function ContactoPage() {
   });
   const [prefs, setPrefs] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSent(true);
-    clear();
+    setLoading(true);
+    setError(false);
+
+    const tripLabels: Record<string, string> = {
+      t1: t("contact.t1"),
+      t2: t("contact.t2"),
+      t3: t("contact.t3"),
+      t4: t("contact.t4"),
+    };
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          people,
+          dateOut: dateOut ? toInputValue(dateOut) : null,
+          dateBack: dateBack ? toInputValue(dateBack) : null,
+          tripType: tripLabels[tripType],
+          prefs,
+          itemName,
+        }),
+      });
+
+      if (!res.ok) throw new Error();
+      setSent(true);
+      clear();
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const tripOptions = [
@@ -145,10 +182,16 @@ export default function ContactoPage() {
             />
           </Field>
 
-          <button type="submit" className="btn-primary h-12 px-8 w-full sm:w-auto">
+          <button type="submit" disabled={loading} className="btn-primary h-12 px-8 w-full sm:w-auto">
             <Send className="h-4 w-4" />
-            {t("cta.enviar")}
+            {loading ? "..." : t("cta.enviar")}
           </button>
+
+          {error && (
+            <p className="text-sm font-medium text-red-500 animate-fade-up">
+              Ha ocurrido un error. Inténtalo de nuevo.
+            </p>
+          )}
 
           {sent && (
             <p className="text-sm font-medium text-terracotta animate-fade-up">

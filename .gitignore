@@ -18,3 +18,11 @@ yarn-error.log*
 
 # env files
 .env*
+
+# Cloudflare / OpenNext
+.open-next
+.wrangler
+
+# Env
+.env.local
+.env*.local

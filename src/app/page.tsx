@@ -9,11 +9,15 @@ import { CamelIcon, TagineIcon, ColumnIcon, ShieldKeyIcon, StarTileIcon } from "
 import { CustomSelect } from "@/components/site/CustomSelect";
 import { CustomDatePicker } from "@/components/site/CustomDatePicker";
 import { useFormatPrice } from "@/lib/format";
+import { useBookingStore } from "@/lib/booking-store";
+import { toInputValue } from "@/hooks/useDate";
 
 export default function HomePage() {
   const { t, i18n } = useTranslation();
   const formatPrice = useFormatPrice();
   const router = useRouter();
+  const { update } = useBookingStore();
+
   const lng = (i18n.resolvedLanguage ?? "es") as string;
 
   const [destino, setDestino] = useState("all");
@@ -29,6 +33,10 @@ export default function HomePage() {
       merzouga: "Merzouga",
     };
     const city = cityMap[destino] ?? "all";
+    update({
+      people: personas,
+    ...(fecha ? { date: toInputValue(fecha) } : {}),
+    });
     router.push(`/packs?city=${city}&duration=all&price=all&type=all&page=1`);
   };
 

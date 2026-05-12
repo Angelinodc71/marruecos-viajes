@@ -1,9 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
 export function useIsMobile() {
   const [mobile, setMobile] = useState(false);
   useEffect(() => {
-    setMobile(window.matchMedia("(pointer: coarse)").matches);
+    const mq = window.matchMedia("(pointer: coarse)");
+    setMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
   }, []);
   return mobile;
 }

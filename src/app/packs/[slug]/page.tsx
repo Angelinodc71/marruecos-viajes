@@ -11,8 +11,9 @@ import { CamelIcon, ColumnIcon, LanternIcon, ShieldKeyIcon, StarTileIcon } from 
 import { useFormatPrice } from "@/lib/format";
 import { CustomSelect } from "@/components/site/CustomSelect";
 import { CustomDatePicker } from "@/components/site/CustomDatePicker";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useBookingStore } from "@/lib/booking-store";
+import { getDateValue, toInputValue } from "@/hooks/useDate";
 
 const itineraryKeys = [
   { day: 1, t: { es: ["Llegada a Marrakech", "Recogida en aeropuerto y traslado a riad. Cena de bienvenida."], en: ["Arrival in Marrakech", "Airport pickup and transfer to riad. Welcome dinner."], fr: ["Arrivée à Marrakech", "Accueil à l'aéroport et transfert au riad. Dîner de bienvenue."] } },
@@ -26,7 +27,7 @@ export default function PackDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
   const { people, date, update } = useBookingStore();
-  const dateValue = date ? new Date(date) : null;
+  const dateValue = getDateValue(date);
 
   const pack = packs.find((p) => p.slug === slug);
   if (!pack) notFound();
@@ -160,7 +161,7 @@ export default function PackDetailPage() {
               <CustomDatePicker
                 label={t("detail.date")}
                 value={dateValue}
-                onChange={(d) => update({ date: d.toISOString() })}
+                onChange={(d) => update({ date: toInputValue(d) })}
                 minDate={new Date()}
                 lng={lng}
               />
