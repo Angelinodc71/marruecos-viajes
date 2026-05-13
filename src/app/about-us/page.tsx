@@ -14,7 +14,7 @@ const testimonials = [
 
 export default function AboutPage() {
   const { t, i18n } = useTranslation();
-  const lng = (i18n.resolvedLanguage ?? "es") as "es" | "en" | "fr" | "de" | "it";
+  const lng = (i18n.resolvedLanguage ?? "es") as "es" | "en" | "fr";
   useEffect(() => { document.title = t("about.metaTitle"); }, [t]);
 
   const values = [
