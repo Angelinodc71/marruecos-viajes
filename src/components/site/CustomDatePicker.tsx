@@ -34,7 +34,6 @@ function getFirstDayOfMonth(year: number, month: number) {
   return day === 0 ? 6 : day - 1;
 }
 
-// Formatea Date a "YYYY-MM-DD" en hora local (sin desfase UTC)
 export function toInputValue(date: Date): string {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -42,7 +41,6 @@ export function toInputValue(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 
-// Parsea "YYYY-MM-DD" a Date local (sin desfase UTC)
 function parseLocalDate(str: string): Date {
   const [y, m, d] = str.split("-").map(Number);
   return new Date(y, m - 1, d);
@@ -73,6 +71,7 @@ export function CustomDatePicker({
   });
   const ref = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const months = getMonths(lng);
   const days = getDays(lng);
@@ -104,6 +103,14 @@ export function CustomDatePicker({
   const handleNativeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.value) return;
     onChange(parseLocalDate(e.target.value));
+  };
+
+  const openNativePicker = () => {
+    try {
+      inputRef.current?.showPicker();
+    } catch {
+      inputRef.current?.click();
+    }
   };
 
   const prevMonth = () => setView((v) => v.month === 0 ? { year: v.year - 1, month: 11 } : { ...v, month: v.month - 1 });
@@ -173,24 +180,38 @@ export function CustomDatePicker({
     </div>
   );
 
+  // Input nativo oculto compartido para móvil
+  const hiddenInput = (
+    <input
+      ref={inputRef}
+      type="date"
+      value={value ? toInputValue(value) : ""}
+      min={toInputValue(min)}
+      onChange={handleNativeChange}
+      className="absolute opacity-0 w-0 h-0 pointer-events-none"
+      tabIndex={-1}
+    />
+  );
+
   // ── HERO variant ────────────────────────────────────────────────────────────
   if (variant === "hero") {
     if (isMobile) {
       return (
-        <div className="flex items-center gap-3 rounded-xl bg-background border border-border px-4 py-2.5 h-full min-h-[56px]">
-          {icon && <span className="text-terracotta shrink-0 flex items-center">{icon}</span>}
-          <div className="flex flex-col flex-1 min-w-0 justify-center">
+        <div
+          className="relative flex items-center gap-3 rounded-xl bg-background border border-border px-4 py-2.5 h-full min-h-[56px] cursor-pointer"
+          onClick={openNativePicker}
+        >
+          {hiddenInput}
+          {icon && <span className="text-terracotta shrink-0 flex items-center pointer-events-none">{icon}</span>}
+          <div className="flex flex-col flex-1 min-w-0 justify-center pointer-events-none">
             <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold leading-none mb-0.5">
               {label}
             </span>
-            <input
-              type="date"
-              value={value ? toInputValue(value) : ""}
-              min={toInputValue(min)}
-              onChange={handleNativeChange}
-              className="w-full bg-transparent text-sm text-foreground outline-none appearance-none focus:outline-none focus:ring-0 [color-scheme:light] p-0 border-0"
-            />
+            <span className={`text-sm ${value ? "text-foreground" : "text-muted-foreground"}`}>
+              {value ? formatDate(value, lng) : label ?? "Selecciona fecha"}
+            </span>
           </div>
+          <CalendarDays className="h-4 w-4 text-muted-foreground shrink-0 pointer-events-none" />
         </div>
       );
     }
@@ -224,15 +245,15 @@ export function CustomDatePicker({
     return (
       <div className="w-full">
         {label && <span className="field-label">{label}</span>}
-        <div className="flex items-center gap-2.5 h-11 rounded-xl border-[1.5px] border-border bg-card px-3.5">
-          <CalendarDays className="h-4 w-4 text-muted-foreground shrink-0" />
-          <input
-            type="date"
-            value={value ? toInputValue(value) : ""}
-            min={toInputValue(min)}
-            onChange={handleNativeChange}
-            className="w-full bg-transparent text-sm text-foreground outline-none appearance-none focus:outline-none focus:ring-0 [color-scheme:light] p-0 border-0"
-          />
+        <div
+          className="relative flex items-center gap-2.5 h-11 rounded-xl border-[1.5px] border-border bg-card px-3.5 cursor-pointer"
+          onClick={openNativePicker}
+        >
+          {hiddenInput}
+          <CalendarDays className="h-4 w-4 text-muted-foreground shrink-0 pointer-events-none" />
+          <span className={`text-sm pointer-events-none ${value ? "text-foreground" : "text-muted-foreground"}`}>
+            {value ? formatDate(value, lng) : label ?? "Selecciona fecha"}
+          </span>
         </div>
       </div>
     );

@@ -57,6 +57,9 @@ export function CustomSelect({
               {label}
             </span>
             <select
+            style={{
+              backgroundPosition: "right -5px",
+            }}
               value={value}
               onChange={(e) => onChange(e.target.value)}
               className="w-full bg-transparent text-sm text-foreground outline-none appearance-none focus:outline-none focus:ring-0"

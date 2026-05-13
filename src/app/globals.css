@@ -178,6 +178,11 @@
     cursor: pointer;
     border: 2px solid white;
   }
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+  }
+  
 }
 
 @layer utilities {
