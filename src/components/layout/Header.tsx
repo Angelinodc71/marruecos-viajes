@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Menu, X, Phone } from "lucide-react";
 import { Logo } from "./Logo";
-import { LanguageSwitcher } from "./LanguageSwitcher";
+import { LanguageSwitcher } from "../providers/LanguageSwitcher";
 import { usePathname } from "next/navigation";
 
 export function Header() {

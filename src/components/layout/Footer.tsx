@@ -1,11 +1,14 @@
 "use client";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import { Logo } from "./Logo";
 import { Facebook, Instagram, Mail, MapPin, Phone, Send } from "lucide-react";
+import { useDestinations } from "@/hooks/useDestinations";
+import { Logo } from "./Logo";
 
 export function Footer() {
   const { t } = useTranslation();
+  const { data: destinations } = useDestinations();
+
   return (
     <footer className="mt-24 border-t border-border bg-cream">
       <div className="relative bg-primary text-primary-foreground">
@@ -37,10 +40,13 @@ export function Footer() {
         <div>
           <h4 className="text-xs uppercase tracking-[0.2em] text-terracotta mb-4">{t("footer.destinos")}</h4>
           <ul className="space-y-2 text-sm">
-            <li><Link href="/destinations" className="hover:text-terracotta">{t("destNames.marrakech")}</Link></li>
-            <li><Link href="/destinations" className="hover:text-terracotta">{t("destNames.fez")}</Link></li>
-            <li><Link href="/destinations" className="hover:text-terracotta">{t("destNames.chefchaouen")}</Link></li>
-            <li><Link href="/destinations" className="hover:text-terracotta">{t("destNames.sahara")}</Link></li>
+            {destinations.map((d) => (
+              <li key={d.slug}>
+                <Link href="/destinations" className="hover:text-terracotta transition-colors">
+                  {t(`destNames.${d.slug}` as const)}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 

@@ -4,9 +4,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { Filter, X } from "lucide-react";
-import { packs } from "@/components/site/data";
-import { PageHero } from "@/components/site/PageHero";
+import { PageHero } from "@/components/layout/PageHero";
 import { useFormatPrice } from "@/lib/format";
+import { usePackages } from "@/hooks/usePackages";
+import { CardSkeleton } from "@/components/skeleton/CardSkeleton";
 
 const PAGE_SIZE = 6;
 
@@ -15,6 +16,7 @@ function PacksContent() {
   const formatPrice = useFormatPrice();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { data: packs, loading } = usePackages();
 
   const search = {
     duration: searchParams.get("duration") ?? "all",
@@ -24,13 +26,7 @@ function PacksContent() {
     page: Number(searchParams.get("page") ?? "1"),
   };
 
-  const [draft, setDraft] = useState({
-    duration: search.duration,
-    price: search.price,
-    city: search.city,
-    type: search.type,
-  });
-
+  const [draft, setDraft] = useState({ duration: search.duration, price: search.price, city: search.city, type: search.type });
   useEffect(() => { document.title = t("packs.metaTitle"); }, [t]);
 
   const filtered = useMemo(() => packs.filter((p) => {
@@ -47,7 +43,7 @@ function PacksContent() {
     if (search.city !== "all" && p.city !== search.city) return false;
     if (search.type !== "all" && p.type !== search.type) return false;
     return true;
-  }), [search.duration, search.price, search.city, search.type]);
+  }), [packs, search.duration, search.price, search.city, search.type]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(search.page, totalPages);
@@ -66,6 +62,7 @@ function PacksContent() {
     router.push(buildUrl({ ...def, page: 1 }));
   };
   const hasFilters = search.duration !== "all" || search.price !== "all" || search.city !== "all" || search.type !== "all";
+  const cities = [...new Set(packs.map((p) => p.city))].sort();
 
   return (
     <>
@@ -79,32 +76,37 @@ function PacksContent() {
       <section className="container-page">
         <div className="rounded-2xl border border-border bg-card p-4 md:p-5 shadow-soft">
           <div className="grid gap-3 md:grid-cols-[1fr_1fr_1fr_1fr_auto]">
-            <Select label={t("packs.duration")} value={draft.duration} onChange={(v) => setDraft({ ...draft, duration: v })} options={[
-              { v: "all", l: t("packs.anyDuration") },
-              { v: "1-3", l: t("packs.days1to3") },
-              { v: "4-6", l: t("packs.days4to6") },
-              { v: "7+", l: t("packs.days7plus") },
-            ]} />
-            <Select label={t("packs.price")} value={draft.price} onChange={(v) => setDraft({ ...draft, price: v })} options={[
-              { v: "all", l: t("packs.anyPrice") },
-              { v: "lt400", l: t("packs.priceLt") },
-              { v: "400-700", l: t("packs.priceMid") },
-              { v: "gt700", l: t("packs.priceGt") },
-            ]} />
-            <Select label={t("packs.city")} value={draft.city} onChange={(v) => setDraft({ ...draft, city: v })} options={[
-              { v: "all", l: t("packs.anyCity") },
-              { v: "Marrakech", l: t("city.Marrakech") },
-              { v: "Fez", l: t("city.Fez") },
-              { v: "Chefchaouen", l: t("city.Chefchaouen") },
-              { v: "Merzouga", l: t("city.Merzouga") },
-            ]} />
-            <Select label={t("packs.expType")} value={draft.type} onChange={(v) => setDraft({ ...draft, type: v })} options={[
-              { v: "all", l: t("packs.anyType") },
-              { v: "Cultural", l: t("packType.Cultural") },
-              { v: "Aventura", l: t("packType.Aventura") },
-              { v: "Lujo", l: t("packType.Lujo") },
-              { v: "Familiar", l: t("packType.Familiar") },
-            ]} />
+            <Select label={t("packs.duration")} value={draft.duration} onChange={(v) => setDraft({ ...draft, duration: v })}
+              options={[
+                { v: "all", l: t("packs.anyDuration") },
+                { v: "1-3", l: t("packs.days1to3") },
+                { v: "4-6", l: t("packs.days4to6") },
+                { v: "7+", l: t("packs.days7plus") },
+              ]}
+            />
+            <Select label={t("packs.price")} value={draft.price} onChange={(v) => setDraft({ ...draft, price: v })}
+              options={[
+                { v: "all", l: t("packs.anyPrice") },
+                { v: "lt400", l: t("packs.priceLt") },
+                { v: "400-700", l: t("packs.priceMid") },
+                { v: "gt700", l: t("packs.priceGt") },
+              ]}
+            />
+            <Select label={t("packs.city")} value={draft.city} onChange={(v) => setDraft({ ...draft, city: v })}
+              options={[
+                { v: "all", l: t("packs.anyCity") },
+                ...cities.map((c) => ({ v: c, l: t(`city.${c}` as const, { defaultValue: c }) })),
+              ]}
+            />
+            <Select label={t("packs.expType")} value={draft.type} onChange={(v) => setDraft({ ...draft, type: v })}
+              options={[
+                { v: "all", l: t("packs.anyType") },
+                { v: "Cultural", l: t("packType.Cultural") },
+                { v: "Adventure", l: t("packType.Adventure") },
+                { v: "Luxury", l: t("packType.Luxury") },
+                { v: "Family", l: t("packType.Family") },
+              ]}
+            />
             <button onClick={apply} className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-terracotta px-6 text-sm font-medium text-terracotta-foreground hover:brightness-110 self-end">
               <Filter className="h-4 w-4" /> {t("cta.filtrar")}
             </button>
@@ -121,7 +123,9 @@ function PacksContent() {
       </section>
 
       <section className="container-page py-12">
-        {paginated.length === 0 ? (
+        {loading ? (
+          <CardSkeleton count={3} aspect="landscape" />
+        ) : paginated.length === 0 ? (
           <div className="text-center py-20">
             <p className="font-display text-2xl text-primary">{t("packs.noResults")}</p>
             <button onClick={reset} className="mt-4 inline-flex h-10 items-center rounded-md bg-terracotta px-5 text-sm font-medium text-terracotta-foreground">
@@ -159,15 +163,11 @@ function PacksContent() {
             })}
           </div>
         )}
-
         {totalPages > 1 && (
           <div className="mt-10 flex items-center justify-center gap-2">
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
-              <button
-                key={n}
-                onClick={() => router.push(buildUrl({ ...search, page: n }))}
-                className={`h-9 w-9 rounded-md text-sm ${n === currentPage ? "bg-terracotta text-terracotta-foreground" : "bg-card border border-border hover:border-terracotta"}`}
-              >
+              <button key={n} onClick={() => router.push(buildUrl({ ...search, page: n }))}
+                className={`h-9 w-9 rounded-md text-sm ${n === currentPage ? "bg-terracotta text-terracotta-foreground" : "bg-card border border-border hover:border-terracotta"}`}>
                 {n}
               </button>
             ))}
@@ -190,9 +190,5 @@ function Select({ label, value, onChange, options }: { label: string; value: str
 }
 
 export default function PacksPage() {
-  return (
-    <Suspense>
-      <PacksContent />
-    </Suspense>
-  );
+  return <Suspense><PacksContent /></Suspense>;
 }

@@ -4,41 +4,48 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowRight, MapPin, Users, Headphones, Search, CalendarDays } from "lucide-react";
-import { destinations, packs } from "@/components/site/data";
-import { CamelIcon, TagineIcon, ColumnIcon, ShieldKeyIcon, StarTileIcon } from "@/components/site/icons";
-import { CustomSelect } from "@/components/site/CustomSelect";
-import { CustomDatePicker } from "@/components/site/CustomDatePicker";
+import { CamelIcon, TagineIcon, ColumnIcon, ShieldKeyIcon, StarTileIcon } from "@/components/icons";
+import { CustomSelect } from "@/components/ui/CustomSelect";
+import { CustomDatePicker } from "@/components/ui/CustomDatePicker";
 import { useFormatPrice } from "@/lib/format";
 import { useBookingStore } from "@/lib/booking-store";
 import { toInputValue } from "@/hooks/useDate";
+import { useDestinations } from "@/hooks/useDestinations";
+import { usePackages } from "@/hooks/usePackages";
+import { DestinationSkeleton } from "@/components/skeleton/DestinationSkeleton";
+import { CardSkeleton } from "@/components/skeleton/CardSkeleton";
+import type { Package } from "@/services/packages";
 
 export default function HomePage() {
   const { t, i18n } = useTranslation();
   const formatPrice = useFormatPrice();
   const router = useRouter();
   const { update } = useBookingStore();
+  const { data: destinations, loading: loadingDest } = useDestinations();
+  const { data: packs, loading: loadingPacks } = usePackages();
 
   const lng = (i18n.resolvedLanguage ?? "es") as string;
-
   const [destino, setDestino] = useState("all");
   const [fecha, setFecha] = useState<Date | null>(null);
   const [personas, setPersonas] = useState("2");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const cityMap: Record<string, string> = {
-      marrakech: "Marrakech",
-      fez: "Fez",
-      chefchaouen: "Chefchaouen",
-      merzouga: "Merzouga",
-    };
-    const city = cityMap[destino] ?? "all";
-    update({
-      people: personas,
-    ...(fecha ? { date: toInputValue(fecha) } : {}),
-    });
+    const selected = destinations.find((d) => d.slug === destino);
+    const city = selected?.city ?? "all";
+    update({ people: personas, ...(fecha ? { date: toInputValue(fecha) } : {}) });
     router.push(`/packs?city=${city}&duration=all&price=all&type=all&page=1`);
   };
+
+  const destinoOptions = [
+    { value: "all", label: t("hero.destinoPh") },
+    ...destinations.map((d) => ({
+      value: d.slug,
+      label: t(`destNames.${d.slug}` as const),
+    })),
+  ];
+
+  const popularPacks = packs.filter((p) => p.popular);
 
   return (
     <>
@@ -52,9 +59,7 @@ export default function HomePage() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-primary/30 to-primary/70" />
           <div className="container-page relative h-full flex flex-col items-center justify-center text-center text-cream pt-12">
-            <p className="text-xs uppercase tracking-[0.4em] text-cream/90 animate-fade-up">
-              {t("hero.eyebrow")}
-            </p>
+            <p className="text-xs uppercase tracking-[0.4em] text-cream/90 animate-fade-up">{t("hero.eyebrow")}</p>
             <h1 className="mt-5 font-display text-5xl md:text-7xl lg:text-8xl font-medium text-balance leading-[1.05] animate-fade-up delay-100">
               {t("hero.title1")}<br />{t("hero.title2")}
             </h1>
@@ -66,10 +71,7 @@ export default function HomePage() {
 
         {/* Search bar */}
         <div className="container-page -mt-16 relative z-10 animate-fade-up delay-300">
-          <form
-            onSubmit={handleSearch}
-            className="mx-auto max-w-5xl rounded-2xl bg-card shadow-elegant border border-border p-3 md:p-4"
-          >
+          <form onSubmit={handleSearch} className="mx-auto max-w-5xl rounded-2xl bg-card shadow-elegant border border-border p-3 md:p-4">
             <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_auto] gap-2 items-stretch">
               <CustomSelect
                 variant="hero"
@@ -77,13 +79,7 @@ export default function HomePage() {
                 icon={<MapPin className="h-4 w-4" />}
                 value={destino}
                 onChange={setDestino}
-                options={[
-                  { value: "all", label: t("hero.destinoPh") },
-                  { value: "marrakech", label: t("city.Marrakech") },
-                  { value: "fez", label: t("city.Fez") },
-                  { value: "chefchaouen", label: t("city.Chefchaouen") },
-                  { value: "merzouga", label: t("city.Merzouga") },
-                ]}
+                options={destinoOptions}
               />
               <CustomDatePicker
                 variant="hero"
@@ -107,10 +103,7 @@ export default function HomePage() {
                   { value: "4", label: "4+ personas" },
                 ]}
               />
-              <button
-                type="submit"
-                className="inline-flex items-center justify-center gap-2 h-full min-h-[56px] rounded-xl bg-terracotta px-6 text-sm font-semibold text-terracotta-foreground hover:brightness-110 transition shadow-soft"
-              >
+              <button type="submit" className="inline-flex items-center justify-center gap-2 h-full min-h-[56px] rounded-xl bg-terracotta px-6 text-sm font-semibold text-terracotta-foreground hover:brightness-110 transition shadow-soft">
                 <Search className="h-4 w-4" />
                 {t("cta.buscar")}
               </button>
@@ -122,33 +115,31 @@ export default function HomePage() {
       {/* DESTINOS */}
       <section className="container-page py-20">
         <SectionHeader eyebrow={t("sections.destinosEyebrow")} title={t("sections.destinosTitle")} />
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {destinations.map((d, i) => (
-            <Link
-              key={d.slug}
-              href="/destinations"
-              className="group relative aspect-[3/4] overflow-hidden rounded-xl shadow-soft hover-lift animate-fade-up"
-              style={{ animationDelay: `${i * 80}ms` }}
-            >
-              <img
-                src={d.image}
-                alt={t(`destNames.${d.slug}` as const)}
-                loading="lazy"
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 gradient-card-overlay" />
-              <div className="absolute inset-x-0 bottom-0 p-5 text-cream transition-transform duration-500 group-hover:-translate-y-1">
-                <h3 className="font-display text-2xl uppercase tracking-wider">
-                  {t(`destNames.${d.slug}` as const)}
-                </h3>
-                <p className="text-xs text-cream/85 mt-1">{t(`destBlurb.${d.slug}` as const)}</p>
-              </div>
-            </Link>
-          ))}
+        <div className="mt-10">
+          {loadingDest ? (
+            <DestinationSkeleton />
+          ) : (
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {destinations.map((d, i) => (
+                <Link key={d.slug} href="/destinations"
+                  className="group relative aspect-[3/4] overflow-hidden rounded-xl shadow-soft hover-lift animate-fade-up"
+                  style={{ animationDelay: `${i * 80}ms` }}
+                >
+                  <img src={d.image} alt={t(`destNames.${d.slug}` as const)} loading="lazy"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <div className="absolute inset-0 gradient-card-overlay" />
+                  <div className="absolute inset-x-0 bottom-0 p-5 text-cream transition-transform duration-500 group-hover:-translate-y-1">
+                    <h3 className="font-display text-2xl uppercase tracking-wider">{t(`destNames.${d.slug}` as const)}</h3>
+                    <p className="text-xs text-cream/85 mt-1">{t(`destBlurb.${d.slug}` as const)}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* PACKS POPULARES + CTA */}
+      {/* PACKS POPULARES */}
       <section className="container-page pb-20">
         <div className="grid lg:grid-cols-[2fr_1fr] gap-8">
           <div>
@@ -158,11 +149,15 @@ export default function HomePage() {
                 {t("cta.verTodos")} <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
-            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-              {packs.filter((p) => p.popular).map((p) => (
-                <PackCard key={p.slug} pack={p} formatPrice={formatPrice} t={t} />
-              ))}
-            </div>
+            {loadingPacks ? (
+              <CardSkeleton count={3} aspect="landscape" />
+            ) : (
+              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                {popularPacks.map((p) => (
+                  <PackCard key={p.slug} pack={p} formatPrice={formatPrice} t={t} />
+                ))}
+              </div>
+            )}
           </div>
 
           <aside className="relative overflow-hidden rounded-2xl bg-primary text-primary-foreground p-8 flex flex-col justify-between min-h-[500px]">
@@ -190,17 +185,10 @@ export default function HomePage() {
             <Feature icon={<TagineIcon width={28} height={28} />} title={t("features.gastro")} sub={t("features.gastroSub")} />
             <Feature icon={<ColumnIcon width={28} height={28} />} title={t("features.cultura")} sub={t("features.culturaSub")} />
           </div>
-          <div className="flex items-center gap-4 md:border-l md:border-border md:pl-8">
-            <div className="h-14 w-14 rounded-full bg-terracotta/20 grid place-items-center font-display text-terracotta text-xl">L</div>
-            <div>
-              <p className="font-medium italic">"Un viaje inolvidable, cada detalle cuidado al máximo."</p>
-              <p className="text-xs text-muted-foreground mt-1">— Laura G., España</p>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* CTA grande */}
+      {/* CTA */}
       <section className="container-page py-20">
         <div className="relative overflow-hidden rounded-3xl">
           <img src="/assets/cta-mountains.jpg" alt="Atlas mountains" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
@@ -239,7 +227,7 @@ function SectionHeader({ eyebrow, title, align = "center" }: { eyebrow: string; 
   );
 }
 
-function PackCard({ pack, formatPrice, t }: { pack: typeof packs[number]; formatPrice: (n: number) => string; t: (k: string) => string }) {
+function PackCard({ pack, formatPrice, t }: { pack: Package; formatPrice: (n: number) => string; t: (k: string) => string }) {
   const { slug, image, duration, nights, price, popular } = pack;
   const name = t(`packCatalog.${slug}.name`);
   return (

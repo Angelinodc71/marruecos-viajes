@@ -3,28 +3,24 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowRight, MapPin } from "lucide-react";
-import { destinations, packs, stays, experiences } from "@/components/site/data";
-import { PageHero } from "@/components/site/PageHero";
+import { PageHero } from "@/components/layout/PageHero";
 import { useFormatPrice } from "@/lib/format";
-
-const DEST_TO_CITIES: Record<string, string[]> = {
-  marrakech: ["Marrakech"],
-  fez: ["Fez"],
-  chefchaouen: ["Chefchaouen"],
-  sahara: ["Merzouga"],
-};
-const DEST_EXP_SLUGS: Record<string, string[]> = {
-  marrakech: ["hammam-spa", "clase-cocina", "tour-medina", "ruta-atlas"],
-  fez: ["tour-medina-2"],
-  chefchaouen: [],
-  sahara: ["excursion-desierto"],
-};
+import { useDestinations } from "@/hooks/useDestinations";
+import { usePackages } from "@/hooks/usePackages";
+import { useStays } from "@/hooks/useStays";
+import { useExperiences } from "@/hooks/useExperiences";
+import { DestinationSkeleton } from "@/components/skeleton/DestinationSkeleton";
 
 export default function DestinosPage() {
   const { t } = useTranslation();
   const formatPrice = useFormatPrice();
   const [active, setActive] = useState<string | null>(null);
   const detailRef = useRef<HTMLDivElement>(null);
+
+  const { data: destinations, loading } = useDestinations();
+  const { data: packs } = usePackages();
+  const { data: stays } = useStays();
+  const { data: experiences } = useExperiences();
 
   useEffect(() => { document.title = t("destinos.metaTitle"); }, [t]);
 
@@ -36,14 +32,14 @@ export default function DestinosPage() {
 
   const filtered = useMemo(() => {
     if (!active) return null;
-    const cities = DEST_TO_CITIES[active] ?? [];
-    const expSlugs = DEST_EXP_SLUGS[active] ?? [];
+    const dest = destinations.find((d) => d.slug === active);
+    if (!dest) return null;
     return {
-      packs: packs.filter((p) => cities.includes(p.city)),
-      stays: stays.filter((s) => cities.includes(s.city)),
-      experiences: experiences.filter((e) => expSlugs.includes(e.slug)),
+      packs: packs.filter((p) => p.city === dest.city),
+      stays: stays.filter((s) => s.city === dest.city),
+      experiences: experiences.slice(0, 3),
     };
-  }, [active]);
+  }, [active, destinations, packs, stays, experiences]);
 
   const activeDest = destinations.find((d) => d.slug === active);
 
@@ -58,36 +54,29 @@ export default function DestinosPage() {
 
       <section className="container-page py-8">
         <p className="text-center text-sm text-muted-foreground mb-6">{t("destinos.selectPrompt")}</p>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {destinations.map((d) => {
-            const name = t(`destNames.${d.slug}` as const);
-            const isActive = active === d.slug;
-            return (
-              <button
-                key={d.slug}
-                type="button"
-                onClick={() => setActive(isActive ? null : d.slug)}
-                aria-pressed={isActive}
-                className={`group relative aspect-[3/4] overflow-hidden rounded-2xl shadow-soft text-left transition-all duration-300 ${isActive ? "ring-2 ring-terracotta scale-[1.02] shadow-elegant" : "hover:shadow-elegant hover:-translate-y-1"}`}
-              >
-                <img
-                  src={d.image}
-                  alt={name}
-                  loading="lazy"
-                  className={`absolute inset-0 h-full w-full object-cover transition-transform duration-700 ${isActive ? "scale-110" : "group-hover:scale-105"}`}
-                />
-                <div className="absolute inset-0 gradient-card-overlay" />
-                <div className="absolute inset-x-0 bottom-0 p-5 text-cream">
-                  <h3 className="font-display text-2xl uppercase tracking-wider">{name}</h3>
-                  <p className="text-xs text-cream/85 mt-1">{t(`destBlurb.${d.slug}` as const)}</p>
-                </div>
-                {isActive && (
-                  <span className="absolute top-3 right-3 bg-terracotta text-terracotta-foreground text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-full">●</span>
-                )}
-              </button>
-            );
-          })}
-        </div>
+        {loading ? (
+          <DestinationSkeleton />
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {destinations.map((d) => {
+              const name = t(`destNames.${d.slug}` as const);
+              const isActive = active === d.slug;
+              return (
+                <button key={d.slug} type="button" onClick={() => setActive(isActive ? null : d.slug)} aria-pressed={isActive}
+                  className={`group relative aspect-[3/4] overflow-hidden rounded-2xl shadow-soft text-left transition-all duration-300 ${isActive ? "ring-2 ring-terracotta scale-[1.02] shadow-elegant" : "hover:shadow-elegant hover:-translate-y-1"}`}>
+                  <img src={d.image} alt={name} loading="lazy"
+                    className={`absolute inset-0 h-full w-full object-cover transition-transform duration-700 ${isActive ? "scale-110" : "group-hover:scale-105"}`} />
+                  <div className="absolute inset-0 gradient-card-overlay" />
+                  <div className="absolute inset-x-0 bottom-0 p-5 text-cream">
+                    <h3 className="font-display text-2xl uppercase tracking-wider">{name}</h3>
+                    <p className="text-xs text-cream/85 mt-1">{t(`destBlurb.${d.slug}` as const)}</p>
+                  </div>
+                  {isActive && <span className="absolute top-3 right-3 bg-terracotta text-terracotta-foreground text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-full">●</span>}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {filtered && activeDest && (
@@ -165,9 +154,7 @@ export default function DestinosPage() {
   );
 }
 
-function DestSection({
-  title, viewAll, viewAllTo, empty, count, children, last,
-}: {
+function DestSection({ title, viewAll, viewAllTo, empty, count, children, last }: {
   title: string; viewAll: string; viewAllTo: string; empty: string; count: number; children: React.ReactNode; last?: boolean;
 }) {
   return (

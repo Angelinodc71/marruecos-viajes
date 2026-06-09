@@ -2,9 +2,9 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Mail, MapPin, Phone, Send, Clock } from "lucide-react";
-import { PageHero } from "@/components/site/PageHero";
-import { CustomSelect } from "@/components/site/CustomSelect";
-import { CustomDatePicker } from "@/components/site/CustomDatePicker";
+import { PageHero } from "@/components/layout/PageHero";
+import { CustomSelect } from "@/components/ui/CustomSelect";
+import { CustomDatePicker } from "@/components/ui/CustomDatePicker";
 import { useBookingStore } from "@/lib/booking-store";
 import { toInputValue } from "@/hooks/useDate";
 
