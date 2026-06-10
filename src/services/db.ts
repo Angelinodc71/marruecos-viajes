@@ -21,7 +21,10 @@ export async function d1Query<T = Record<string, unknown>>(
     // Next.js cache: revalidate each 60s (default is 0, which means no caching)
     next: { revalidate: 60 },
   });
-   console.log(res, process.env.CF_API_TOKEN, sql, params);
+  const text = await res.clone().text();
+
+  console.log("STATUS:", res.status, "BODY:", text);
+
 
   if (!res.ok) {
     const err = await res.text();
