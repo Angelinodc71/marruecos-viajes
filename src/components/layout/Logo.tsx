@@ -9,6 +9,7 @@ export function Logo() {
         alt="Zahraa — Moroccan Heritage Experiences"
         height={120}
         style={{ marginLeft: '-35px'}}
+        unoptimized
       />
     </div>
   );
