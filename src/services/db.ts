@@ -1,6 +1,5 @@
  
-const BASE = `https://api.cloudflare.com/client/v4/accounts/${process.env.CF_ACCOUNT_ID}/d1/database/${process.env.CF_D1_DATABASE_ID}/query`;
- 
+
 type D1Result<T> = {
   results: T[];
   success: boolean;
@@ -11,6 +10,8 @@ export async function d1Query<T = Record<string, unknown>>(
   sql: string,
   params: (string | number | null)[] = []
 ): Promise<T[]> {
+  const BASE = `https://api.cloudflare.com/client/v4/accounts/${process.env.CF_ACCOUNT_ID}/d1/database/${process.env.CF_D1_DATABASE_ID}/query`;
+
   const res = await fetch(BASE, {
     method: "POST",
     headers: {
