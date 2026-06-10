@@ -19,9 +19,10 @@ export async function d1Query<T = Record<string, unknown>>(
     },
     body: JSON.stringify({ sql, params }),
     // Next.js cache: revalidate each 60s (default is 0, which means no caching)
-    cache: "no-store",
+    next: { revalidate: 60 },
   });
- 
+   console.log(res, process.env.CF_API_TOKEN, sql, params);
+
   if (!res.ok) {
     const err = await res.text();
     throw new Error(`D1 query failed [${res.status}]: ${err}`);
