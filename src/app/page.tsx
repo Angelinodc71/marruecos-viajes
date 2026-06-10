@@ -49,7 +49,6 @@ export default function HomePage() {
 
   return (
     <>
-      {/* HERO */}
       <section className="relative">
         <div className="relative h-[78vh] min-h-[560px] w-full overflow-hidden">
           <img
@@ -69,7 +68,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Search bar */}
         <div className="container-page -mt-16 relative z-10 animate-fade-up delay-300">
           <form onSubmit={handleSearch} className="mx-auto max-w-5xl rounded-2xl bg-card shadow-elegant border border-border p-3 md:p-4">
             <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_auto] gap-2 items-stretch">
@@ -112,7 +110,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* DESTINOS */}
       <section className="container-page py-20">
         <SectionHeader eyebrow={t("sections.destinosEyebrow")} title={t("sections.destinosTitle")} />
         <div className="mt-10">
@@ -139,7 +136,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* PACKS POPULARES */}
       <section className="container-page pb-20">
         <div className="grid lg:grid-cols-[2fr_1fr] gap-8">
           <div>
@@ -177,7 +173,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* EXPERIENCIAS BAR */}
       <section className="bg-cream border-y border-border">
         <div className="container-page py-12 grid md:grid-cols-[1fr_auto] gap-8 items-center">
           <div className="grid sm:grid-cols-3 gap-8">
@@ -188,7 +183,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="container-page py-20">
         <div className="relative overflow-hidden rounded-3xl">
           <img src="/assets/cta-mountains.jpg" alt="Atlas mountains" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
@@ -204,7 +198,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* TRUST */}
       <section className="container-page pb-4">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-muted-foreground">
           <TrustItem text={t("bullets.precio")} />
