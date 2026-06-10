@@ -19,7 +19,7 @@ export async function d1Query<T = Record<string, unknown>>(
     },
     body: JSON.stringify({ sql, params }),
     // Next.js cache: revalidate each 60s (default is 0, which means no caching)
-    next: { revalidate: 60 },
+    cache: "no-store",
   });
  
   if (!res.ok) {
