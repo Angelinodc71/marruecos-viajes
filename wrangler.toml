@@ -12,3 +12,10 @@ CF_D1_DATABASE_ID = ""
 CF_API_TOKEN = ""
 CONTACT_EMAIL = ""
 RESEND_API_KEY = ""
+
+[observability.logs]
+enabled = false
+invocation_logs = true
+
+[observability.traces]
+enabled = false
