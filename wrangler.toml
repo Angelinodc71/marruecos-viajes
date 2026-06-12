@@ -6,13 +6,6 @@ main = ".open-next/worker.js"
 [assets]
 directory = ".open-next/assets"
 
-[vars]
-CF_ACCOUNT_ID = ""
-CF_D1_DATABASE_ID = ""
-CF_API_TOKEN = ""
-CONTACT_EMAIL = ""
-RESEND_API_KEY = ""
-
 [observability]
 enabled = false
 
