@@ -14,6 +14,7 @@ import { useDestinations } from "@/hooks/useDestinations";
 import { usePackages } from "@/hooks/usePackages";
 import { DestinationSkeleton } from "@/components/skeleton/DestinationSkeleton";
 import { CardSkeleton } from "@/components/skeleton/CardSkeleton";
+import { PackPrice } from "@/components/ui/PackPrice";
 import type { Package } from "@/services/packages";
 
 export default function HomePage() {
@@ -49,6 +50,7 @@ export default function HomePage() {
 
   return (
     <>
+      {/* HERO */}
       <section className="relative">
         <div className="relative h-[78vh] min-h-[560px] w-full overflow-hidden">
           <img
@@ -71,29 +73,9 @@ export default function HomePage() {
         <div className="container-page -mt-16 relative z-10 animate-fade-up delay-300">
           <form onSubmit={handleSearch} className="mx-auto max-w-5xl rounded-2xl bg-card shadow-elegant border border-border p-3 md:p-4">
             <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_auto] gap-2 items-stretch">
-              <CustomSelect
-                variant="hero"
-                label={t("hero.destino")}
-                icon={<MapPin className="h-4 w-4" />}
-                value={destino}
-                onChange={setDestino}
-                options={destinoOptions}
-              />
-              <CustomDatePicker
-                variant="hero"
-                label={t("hero.fechas")}
-                icon={<CalendarDays className="h-4 w-4" />}
-                value={fecha}
-                onChange={setFecha}
-                minDate={new Date()}
-                lng={lng}
-              />
-              <CustomSelect
-                variant="hero"
-                label={t("hero.personas")}
-                icon={<Users className="h-4 w-4" />}
-                value={personas}
-                onChange={setPersonas}
+              <CustomSelect variant="hero" label={t("hero.destino")} icon={<MapPin className="h-4 w-4" />} value={destino} onChange={setDestino} options={destinoOptions} />
+              <CustomDatePicker variant="hero" label={t("hero.fechas")} icon={<CalendarDays className="h-4 w-4" />} value={fecha} onChange={setFecha} minDate={new Date()} lng={lng} />
+              <CustomSelect variant="hero" label={t("hero.personas")} icon={<Users className="h-4 w-4" />} value={personas} onChange={setPersonas}
                 options={[
                   { value: "1", label: "1 persona" },
                   { value: "2", label: "2 personas" },
@@ -102,28 +84,25 @@ export default function HomePage() {
                 ]}
               />
               <button type="submit" className="inline-flex items-center justify-center gap-2 h-full min-h-[56px] rounded-xl bg-terracotta px-6 text-sm font-semibold text-terracotta-foreground hover:brightness-110 transition shadow-soft">
-                <Search className="h-4 w-4" />
-                {t("cta.buscar")}
+                <Search className="h-4 w-4" /> {t("cta.buscar")}
               </button>
             </div>
           </form>
         </div>
       </section>
 
+      {/* DESTINOS */}
       <section className="container-page py-20">
         <SectionHeader eyebrow={t("sections.destinosEyebrow")} title={t("sections.destinosTitle")} />
         <div className="mt-10">
-          {loadingDest ? (
-            <DestinationSkeleton />
-          ) : (
+          {loadingDest ? <DestinationSkeleton /> : (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {destinations.map((d, i) => (
                 <Link key={d.slug} href="/destinations"
                   className="group relative aspect-[3/4] overflow-hidden rounded-xl shadow-soft hover-lift animate-fade-up"
                   style={{ animationDelay: `${i * 80}ms` }}
                 >
-                  <img src={d.image} alt={t(`destNames.${d.slug}` as const)} loading="lazy"
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <img src={d.image} alt={t(`destNames.${d.slug}` as const)} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   <div className="absolute inset-0 gradient-card-overlay" />
                   <div className="absolute inset-x-0 bottom-0 p-5 text-cream transition-transform duration-500 group-hover:-translate-y-1">
                     <h3 className="font-display text-2xl uppercase tracking-wider">{t(`destNames.${d.slug}` as const)}</h3>
@@ -136,6 +115,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* PACKS POPULARES */}
       <section className="container-page pb-20">
         <div className="grid lg:grid-cols-[2fr_1fr] gap-8">
           <div>
@@ -145,9 +125,7 @@ export default function HomePage() {
                 {t("cta.verTodos")} <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
-            {loadingPacks ? (
-              <CardSkeleton count={3} aspect="landscape" />
-            ) : (
+            {loadingPacks ? <CardSkeleton count={3} aspect="landscape" /> : (
               <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 {popularPacks.map((p) => (
                   <PackCard key={p.slug} pack={p} formatPrice={formatPrice} t={t} />
@@ -173,6 +151,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* EXPERIENCIAS BAR */}
       <section className="bg-cream border-y border-border">
         <div className="container-page py-12 grid md:grid-cols-[1fr_auto] gap-8 items-center">
           <div className="grid sm:grid-cols-3 gap-8">
@@ -183,6 +162,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* CTA */}
       <section className="container-page py-20">
         <div className="relative overflow-hidden rounded-3xl">
           <img src="/assets/cta-mountains.jpg" alt="Atlas mountains" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
@@ -198,6 +178,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* TRUST */}
       <section className="container-page pb-4">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-muted-foreground">
           <TrustItem text={t("bullets.precio")} />
@@ -212,16 +193,14 @@ export default function HomePage() {
 function SectionHeader({ eyebrow, title, align = "center" }: { eyebrow: string; title: string; align?: "center" | "left" }) {
   return (
     <div className={align === "center" ? "text-center" : ""}>
-      <p className={`text-xs uppercase tracking-[0.25em] text-terracotta ${align === "center" ? "before:content-['—'] before:mr-2 after:content-['—'] after:ml-2" : ""}`}>
-        {eyebrow}
-      </p>
+      <p className={`text-xs uppercase tracking-[0.25em] text-terracotta ${align === "center" ? "before:content-['—'] before:mr-2 after:content-['—'] after:ml-2" : ""}`}>{eyebrow}</p>
       <h2 className="mt-3 font-display text-3xl md:text-4xl text-primary text-balance">{title}</h2>
     </div>
   );
 }
 
 function PackCard({ pack, formatPrice, t }: { pack: Package; formatPrice: (n: number) => string; t: (k: string) => string }) {
-  const { slug, image, duration, nights, price, popular } = pack;
+  const { slug, image, duration, nights, popular } = pack;
   const name = t(`packCatalog.${slug}.name`);
   return (
     <Link href={`/packs/${slug}`} className="group block rounded-xl overflow-hidden bg-card border border-border shadow-soft hover-lift hover:shadow-elegant">
@@ -237,10 +216,7 @@ function PackCard({ pack, formatPrice, t }: { pack: Package; formatPrice: (n: nu
         <h3 className="font-display text-xl text-primary">{name}</h3>
         <p className="text-xs text-muted-foreground mt-1">{duration} / {nights} {t("packs.nights")}</p>
         <div className="mt-3 flex items-center justify-end">
-          <div className="text-right">
-            <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{t("packs.from")}</span>
-            <p className="font-display text-2xl text-terracotta leading-none">{formatPrice(price)}</p>
-          </div>
+          <PackPrice price={pack.price} formatPrice={formatPrice} size="sm" />
         </div>
       </div>
     </Link>

@@ -51,9 +51,7 @@ function ExperienciasContent() {
       </section>
 
       <section className="container-page py-12">
-        {loading ? (
-          <CardSkeleton count={3} aspect="landscape" />
-        ) : filtered.length === 0 ? (
+        {loading ? <CardSkeleton count={3} aspect="landscape" /> : filtered.length === 0 ? (
           <p className="text-center py-20 font-display text-2xl text-primary">{t("experiences.noResults")}</p>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -76,7 +74,7 @@ function ExperienciasContent() {
                         <Clock className="h-3 w-3" /> {e.duration}
                       </span>
                       <div className="text-right">
-                        <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{t("packs.from")}</span>
+                        <span className="text-[10px] uppercase tracking-widest text-muted-foreground block">{t("packs.from")}</span>
                         <p className="font-display text-2xl text-terracotta leading-none">{formatPrice(e.price)}</p>
                       </div>
                     </div>

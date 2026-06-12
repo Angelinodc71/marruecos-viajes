@@ -2,8 +2,10 @@ import { useTranslation } from "react-i18next";
 
 const CURRENCY: Record<string, { code: string; locale: string; rate: number }> = {
   es: { code: "EUR", locale: "es-ES", rate: 1 },
+  en: { code: "EUR", locale: "en-GB", rate: 1 },
   fr: { code: "EUR", locale: "fr-FR", rate: 1 },
-  en: { code: "USD", locale: "en-US", rate: 1.08 },
+  de: { code: "EUR", locale: "de-DE", rate: 1 },
+  it: { code: "EUR", locale: "it-IT", rate: 1 },
 };
 
 export function useLocaleInfo() {

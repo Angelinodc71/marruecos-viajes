@@ -13,6 +13,9 @@ CF_API_TOKEN = ""
 CONTACT_EMAIL = ""
 RESEND_API_KEY = ""
 
+[observability]
+enabled = false
+
 [observability.logs]
 enabled = false
 invocation_logs = true

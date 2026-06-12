@@ -20,8 +20,7 @@ export async function d1Query<T = Record<string, unknown>>(
   const apiToken = getEnv("CF_API_TOKEN");
 
   const BASE = `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/query`;
-  console.log("BASE", BASE, { sql, params });
-  console.log("globalThis keys:", Object.keys(globalThis as Record<string, unknown>).filter(k => k.startsWith("CF") || k.startsWith("RESEND") || k.startsWith("CONTACT")));
+
   const res = await fetch(BASE, {
     method: "POST",
     headers: {

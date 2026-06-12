@@ -14,14 +14,7 @@ import { CustomSelect } from "@/components/ui/CustomSelect";
 import { CustomDatePicker } from "@/components/ui/CustomDatePicker";
 import { useBookingStore } from "@/lib/booking-store";
 import { getDateValue, toInputValue } from "@/hooks/useDate";
-
-const itineraryKeys = [
-  { day: 1, t: { es: ["Llegada a Marrakech", "Recogida en aeropuerto y traslado a riad. Cena de bienvenida."], en: ["Arrival in Marrakech", "Airport pickup and transfer to riad. Welcome dinner."], fr: ["Arrivée à Marrakech", "Accueil à l'aéroport et transfert au riad. Dîner de bienvenue."], it: ["Arrivo a Marrakech", "Accoglienza in aeroporto e trasferimento al riad. Cena di benvenuto."], de: ["Ankunft in Marrakesch", "Abholung am Flughafen und Transfer zum Riad. Willkommensdinner."] } },
-  { day: 2, t: { es: ["Medina y zocos", "Tour guiado por la medina y plaza Jemaa el-Fna."], en: ["Medina & souks", "Guided tour of the medina and Jemaa el-Fna square."], fr: ["Médina & souks", "Visite guidée de la médina et de la place Jemaa el-Fna."], it: ["Medina e souk", "Tour guidato della medina e della piazza Jemaa el-Fna."], de: ["Medina & Souks", "Geführte Tour durch die Medina und den Jemaa el-Fna-Platz."] } },
-  { day: 3, t: { es: ["Ruta al desierto", "Salida hacia Merzouga atravesando el Atlas."], en: ["Route to the desert", "Departure to Merzouga across the Atlas."], fr: ["Route vers le désert", "Départ vers Merzouga à travers l'Atlas."], it: ["Strada verso il deserto", "Partenza per Merzouga attraverso l'Atlante."], de: ["Route in die Wüste", "Abfahrt nach Merzouga durch den Atlas."] } },
-  { day: 4, t: { es: ["Sahara y noche en jaima", "Camellos, dunas Erg Chebbi y noche bajo las estrellas."], en: ["Sahara & night in tent", "Camels, Erg Chebbi dunes and a night under the stars."], fr: ["Sahara & nuit sous tente", "Chameaux, dunes d'Erg Chebbi et nuit à la belle étoile."], it: ["Sahara e notte in tenda", "Cammelli, dune di Erg Chebbi e una notte sotto le stelle."], de: ["Sahara & Nacht im Zelt", "Kamele, Erg-Chebbi-Dünen und eine Nacht unter dem Sternenhimmel."] } },
-  { day: 5, t: { es: ["Regreso", "Vuelta a Marrakech y traslado al aeropuerto."], en: ["Return", "Back to Marrakech and airport transfer."], fr: ["Retour", "Retour à Marrakech et transfert à l'aéroport."], it: ["Ritorno", "Rientro a Marrakech e trasferimento all'aeroporto."], de: ["Rückreise", "Rückfahrt nach Marrakesch und Transfer zum Flughafen."] } },
-];
+import { PackPrice } from "@/components/ui/PackPrice";
 
 export default function PackDetailPage() {
   const params = useParams();
@@ -31,7 +24,7 @@ export default function PackDetailPage() {
 
   const { t, i18n } = useTranslation();
   const formatPrice = useFormatPrice();
-  const lng = (i18n.resolvedLanguage ?? "es") as "es" | "en" | "fr" | "de" | "it";
+  const lng = (i18n.resolvedLanguage ?? "es") as string;
   const { people, date, update } = useBookingStore();
   const dateValue = getDateValue(date);
 
@@ -78,14 +71,14 @@ export default function PackDetailPage() {
       icon: <CamelIcon className="h-5 w-5" />,
       content: (
         <ol className="space-y-4">
-          {itineraryKeys.map((it) => (
-            <li key={it.day} className="flex gap-4 rounded-lg border border-border bg-card p-5 shadow-soft">
+          {pack.itinerary.map((key, i) => (
+            <li key={key} className="flex gap-4 rounded-lg border border-border bg-card p-5 shadow-soft">
               <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-terracotta/10 font-display text-lg text-terracotta">
-                {t("detail.day")[0]}{it.day}
+                {t("detail.day")[0]}{i + 1}
               </div>
               <div>
-                <h3 className="font-medium">{it.t[lng][0]}</h3>
-                <p className="text-sm text-muted-foreground mt-1">{it.t[lng][1]}</p>
+                <h3 className="font-medium">{t(`packItinerary.${key}.title` as const)}</h3>
+                <p className="text-sm text-muted-foreground mt-1">{t(`packItinerary.${key}.desc` as const)}</p>
               </div>
             </li>
           ))}
@@ -137,9 +130,8 @@ export default function PackDetailPage() {
 
         <aside className="lg:sticky lg:top-24 self-start w-full min-w-0">
           <div className="rounded-2xl border border-border bg-card p-6 shadow-elegant">
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{t("detail.from")}</p>
-            <p className="font-display text-4xl text-terracotta leading-none">{formatPrice(pack.price)}</p>
-            <p className="text-xs text-muted-foreground mt-1">{t("detail.perPerson")}</p>
+            <PackPrice price={pack.price} formatPrice={formatPrice} size="lg" />
+            {pack.price > 0 && <p className="text-xs text-muted-foreground mt-1">{t("detail.perPerson")}</p>}
             <div className="mt-5 space-y-4">
               <CustomSelect label={t("detail.people")} value={people} onChange={(v) => update({ people: v })}
                 options={[

@@ -8,6 +8,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { useFormatPrice } from "@/lib/format";
 import { usePackages } from "@/hooks/usePackages";
 import { CardSkeleton } from "@/components/skeleton/CardSkeleton";
+import { PackPrice } from "@/components/ui/PackPrice";
 
 const PAGE_SIZE = 6;
 
@@ -72,40 +73,20 @@ function PacksContent() {
         title={t("packs.heroTitle")}
         description={t("packs.heroDesc")}
       />
-
       <section className="container-page">
         <div className="rounded-2xl border border-border bg-card p-4 md:p-5 shadow-soft">
           <div className="grid gap-3 md:grid-cols-[1fr_1fr_1fr_1fr_auto]">
             <Select label={t("packs.duration")} value={draft.duration} onChange={(v) => setDraft({ ...draft, duration: v })}
-              options={[
-                { v: "all", l: t("packs.anyDuration") },
-                { v: "1-3", l: t("packs.days1to3") },
-                { v: "4-6", l: t("packs.days4to6") },
-                { v: "7+", l: t("packs.days7plus") },
-              ]}
+              options={[{ v: "all", l: t("packs.anyDuration") }, { v: "1-3", l: t("packs.days1to3") }, { v: "4-6", l: t("packs.days4to6") }, { v: "7+", l: t("packs.days7plus") }]}
             />
             <Select label={t("packs.price")} value={draft.price} onChange={(v) => setDraft({ ...draft, price: v })}
-              options={[
-                { v: "all", l: t("packs.anyPrice") },
-                { v: "lt400", l: t("packs.priceLt") },
-                { v: "400-700", l: t("packs.priceMid") },
-                { v: "gt700", l: t("packs.priceGt") },
-              ]}
+              options={[{ v: "all", l: t("packs.anyPrice") }, { v: "lt400", l: t("packs.priceLt") }, { v: "400-700", l: t("packs.priceMid") }, { v: "gt700", l: t("packs.priceGt") }]}
             />
             <Select label={t("packs.city")} value={draft.city} onChange={(v) => setDraft({ ...draft, city: v })}
-              options={[
-                { v: "all", l: t("packs.anyCity") },
-                ...cities.map((c) => ({ v: c, l: t(`city.${c}` as const, { defaultValue: c }) })),
-              ]}
+              options={[{ v: "all", l: t("packs.anyCity") }, ...cities.map((c) => ({ v: c, l: t(`city.${c}` as const, { defaultValue: c }) }))]}
             />
             <Select label={t("packs.expType")} value={draft.type} onChange={(v) => setDraft({ ...draft, type: v })}
-              options={[
-                { v: "all", l: t("packs.anyType") },
-                { v: "Cultural", l: t("packType.Cultural") },
-                { v: "Adventure", l: t("packType.Adventure") },
-                { v: "Luxury", l: t("packType.Luxury") },
-                { v: "Family", l: t("packType.Family") },
-              ]}
+              options={[{ v: "all", l: t("packs.anyType") }, { v: "Cultural", l: t("packType.Cultural") }, { v: "Adventure", l: t("packType.Adventure") }, { v: "Luxury", l: t("packType.Luxury") }, { v: "Family", l: t("packType.Family") }]}
             />
             <button onClick={apply} className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-terracotta px-6 text-sm font-medium text-terracotta-foreground hover:brightness-110 self-end">
               <Filter className="h-4 w-4" /> {t("cta.filtrar")}
@@ -114,23 +95,16 @@ function PacksContent() {
           {hasFilters && (
             <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
               <span>{filtered.length} {filtered.length === 1 ? t("packs.results") : t("packs.results_plural")}</span>
-              <button onClick={reset} className="inline-flex items-center gap-1 hover:text-terracotta">
-                <X className="h-3 w-3" /> {t("cta.limpiar")}
-              </button>
+              <button onClick={reset} className="inline-flex items-center gap-1 hover:text-terracotta"><X className="h-3 w-3" /> {t("cta.limpiar")}</button>
             </div>
           )}
         </div>
       </section>
-
       <section className="container-page py-12">
-        {loading ? (
-          <CardSkeleton count={3} aspect="landscape" />
-        ) : paginated.length === 0 ? (
+        {loading ? <CardSkeleton count={3} aspect="landscape" /> : paginated.length === 0 ? (
           <div className="text-center py-20">
             <p className="font-display text-2xl text-primary">{t("packs.noResults")}</p>
-            <button onClick={reset} className="mt-4 inline-flex h-10 items-center rounded-md bg-terracotta px-5 text-sm font-medium text-terracotta-foreground">
-              {t("cta.limpiar")}
-            </button>
+            <button onClick={reset} className="mt-4 inline-flex h-10 items-center rounded-md bg-terracotta px-5 text-sm font-medium text-terracotta-foreground">{t("cta.limpiar")}</button>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -152,10 +126,7 @@ function PacksContent() {
                     <p className="text-xs text-muted-foreground mt-2">{p.duration} / {p.nights} {t("packs.nights")} · {t(`city.${p.city}` as const, { defaultValue: p.city })}</p>
                     <div className="mt-4 flex items-end justify-between">
                       <span className="text-xs text-muted-foreground">{t(`city.${p.city}` as const, { defaultValue: p.city })}</span>
-                      <div className="text-right">
-                        <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{t("packs.from")}</span>
-                        <p className="font-display text-2xl text-terracotta leading-none">{formatPrice(p.price)}</p>
-                      </div>
+                      <PackPrice price={p.price} formatPrice={formatPrice} size="sm" />
                     </div>
                   </div>
                 </Link>

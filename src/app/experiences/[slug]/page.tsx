@@ -14,6 +14,7 @@ import { CamelIcon, HammamIcon, LanternIcon, ShieldKeyIcon, StarTileIcon, Tagine
 import { useFormatPrice } from "@/lib/format";
 import { useBookingStore } from "@/lib/booking-store";
 import { getDateValue } from "@/hooks/useDate";
+import { PackPrice } from "@/components/ui/PackPrice";
 
 export default function ExperienceDetailPage() {
   const params = useParams();
@@ -106,9 +107,8 @@ export default function ExperienceDetailPage() {
         </div>
         <aside className="lg:sticky lg:top-24 self-start w-full min-w-0">
           <div className="rounded-2xl border border-border bg-card p-6 shadow-elegant">
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{t("detail.from")}</p>
-            <p className="font-display text-4xl text-terracotta leading-none">{formatPrice(exp.price)}</p>
-            <p className="text-xs text-muted-foreground mt-1">{t("detail.perPerson")}</p>
+            <PackPrice price={exp.price} formatPrice={formatPrice} size="lg" />
+            {exp.price > 0 && <p className="text-xs text-muted-foreground mt-1">{t("detail.perPerson")}</p>}
             <div className="mt-5 space-y-4">
               <CustomSelect label={t("detail.people")} value={people} onChange={(v) => update({ people: v })}
                 options={[

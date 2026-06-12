@@ -10,6 +10,7 @@ import { usePackages } from "@/hooks/usePackages";
 import { useStays } from "@/hooks/useStays";
 import { useExperiences } from "@/hooks/useExperiences";
 import { DestinationSkeleton } from "@/components/skeleton/DestinationSkeleton";
+import { PackPrice } from "@/components/ui/PackPrice";
 
 export default function DestinosPage() {
   const { t } = useTranslation();
@@ -54,9 +55,7 @@ export default function DestinosPage() {
 
       <section className="container-page py-8">
         <p className="text-center text-sm text-muted-foreground mb-6">{t("destinos.selectPrompt")}</p>
-        {loading ? (
-          <DestinationSkeleton />
-        ) : (
+        {loading ? <DestinationSkeleton /> : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {destinations.map((d) => {
               const name = t(`destNames.${d.slug}` as const);
@@ -105,7 +104,7 @@ export default function DestinosPage() {
                     <h4 className="font-display text-lg text-primary">{t(`packCatalog.${p.slug}.name`)}</h4>
                     <p className="text-xs text-muted-foreground mt-0.5">{p.duration}</p>
                     <div className="mt-2 flex items-center justify-end">
-                      <span className="font-display text-lg text-terracotta">{formatPrice(p.price)}</span>
+                      <PackPrice price={p.price} formatPrice={formatPrice} size="sm" />
                     </div>
                   </div>
                 </Link>
@@ -122,9 +121,11 @@ export default function DestinosPage() {
                     <h4 className="font-display text-lg text-primary">{t(`stayCatalog.${s.slug}.name`)}</h4>
                     <p className="text-xs text-muted-foreground mt-0.5">{t(`stayType.${s.type}` as const)}</p>
                     <div className="mt-2 flex items-center justify-end">
-                      <span className="font-display text-lg text-terracotta">
-                        {formatPrice(s.price)}<span className="text-xs text-muted-foreground">{t("stays.perNight")}</span>
-                      </span>
+                      <div className="text-right">
+                        <span className="text-[10px] uppercase tracking-widest text-muted-foreground block">{t("packs.from")}</span>
+                        <span className="font-display text-lg text-terracotta">{formatPrice(s.price)}</span>
+                        <span className="text-xs text-muted-foreground">{t("stays.perNight")}</span>
+                      </div>
                     </div>
                   </div>
                 </Link>
@@ -141,7 +142,10 @@ export default function DestinosPage() {
                     <h4 className="font-display text-lg text-primary">{t(`expCatalog.${e.slug}.name`)}</h4>
                     <p className="text-xs text-muted-foreground mt-0.5">{e.duration}</p>
                     <div className="mt-2 flex items-center justify-end">
-                      <span className="font-display text-lg text-terracotta">{formatPrice(e.price)}</span>
+                      <div className="text-right">
+                        <span className="text-[10px] uppercase tracking-widest text-muted-foreground block">{t("packs.from")}</span>
+                        <span className="font-display text-lg text-terracotta">{formatPrice(e.price)}</span>
+                      </div>
                     </div>
                   </div>
                 </Link>
