@@ -28,13 +28,18 @@ export default function HomePage() {
   const lng = (i18n.resolvedLanguage ?? "es") as string;
   const [destino, setDestino] = useState("all");
   const [fecha, setFecha] = useState<Date | null>(null);
+  const [fechaVuelta, setFechaVuelta] = useState<Date | null>(null);
   const [personas, setPersonas] = useState("2");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const selected = destinations.find((d) => d.slug === destino);
     const city = selected?.city ?? "all";
-    update({ people: personas, ...(fecha ? { date: toInputValue(fecha) } : {}) });
+    update({
+      people: personas,
+      ...(fecha ? { date: toInputValue(fecha) } : {}),
+      ...(fechaVuelta ? { dateBack: toInputValue(fechaVuelta) } : {}),
+    });
     router.push(`/packs?city=${city}&duration=all&price=all&type=all&page=1`);
   };
 
@@ -72,15 +77,44 @@ export default function HomePage() {
 
         <div className="container-page -mt-16 relative z-10 animate-fade-up delay-300">
           <form onSubmit={handleSearch} className="mx-auto max-w-5xl rounded-2xl bg-card shadow-elegant border border-border p-3 md:p-4">
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_auto] gap-2 items-stretch">
-              <CustomSelect variant="hero" label={t("hero.destino")} icon={<MapPin className="h-4 w-4" />} value={destino} onChange={setDestino} options={destinoOptions} />
-              <CustomDatePicker variant="hero" label={t("hero.fechas")} icon={<CalendarDays className="h-4 w-4" />} value={fecha} onChange={setFecha} minDate={new Date()} lng={lng} />
-              <CustomSelect variant="hero" label={t("hero.personas")} icon={<Users className="h-4 w-4" />} value={personas} onChange={setPersonas}
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-2 items-stretch">
+              <CustomSelect
+                variant="hero"
+                label={t("hero.destino")}
+                icon={<MapPin className="h-4 w-4" />}
+                value={destino}
+                onChange={setDestino}
+                options={destinoOptions}
+              />
+              <CustomDatePicker
+                variant="hero"
+                label={t("contact.dateOut")}
+                icon={<CalendarDays className="h-4 w-4" />}
+                value={fecha}
+                onChange={setFecha}
+                minDate={new Date()}
+                lng={lng}
+              />
+              <CustomDatePicker
+                variant="hero"
+                label={t("contact.dateBack")}
+                icon={<CalendarDays className="h-4 w-4" />}
+                value={fechaVuelta}
+                onChange={setFechaVuelta}
+                minDate={fecha ?? new Date()}
+                lng={lng}
+              />
+              <CustomSelect
+                variant="hero"
+                label={t("hero.personas")}
+                icon={<Users className="h-4 w-4" />}
+                value={personas}
+                onChange={setPersonas}
                 options={[
-                  { value: "1", label: "1 persona" },
-                  { value: "2", label: "2 personas" },
-                  { value: "3", label: "3 personas" },
-                  { value: "4", label: "4+ personas" },
+                  { value: "1", label: "1" },
+                  { value: "2", label: "2" },
+                  { value: "3", label: "3" },
+                  { value: "4", label: "4+" },
                 ]}
               />
               <button type="submit" className="inline-flex items-center justify-center gap-2 h-full min-h-[56px] rounded-xl bg-terracotta px-6 text-sm font-semibold text-terracotta-foreground hover:brightness-110 transition shadow-soft">

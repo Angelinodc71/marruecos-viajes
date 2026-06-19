@@ -9,6 +9,7 @@ import { useFormatPrice } from "@/lib/format";
 import { usePackages } from "@/hooks/usePackages";
 import { CardSkeleton } from "@/components/skeleton/CardSkeleton";
 import { PackPrice } from "@/components/ui/PackPrice";
+import { CustomSelect } from "@/components/ui/CustomSelect";
 
 const PAGE_SIZE = 6;
 
@@ -76,17 +77,48 @@ function PacksContent() {
       <section className="container-page">
         <div className="rounded-2xl border border-border bg-card p-4 md:p-5 shadow-soft">
           <div className="grid gap-3 md:grid-cols-[1fr_1fr_1fr_1fr_auto]">
-            <Select label={t("packs.duration")} value={draft.duration} onChange={(v) => setDraft({ ...draft, duration: v })}
-              options={[{ v: "all", l: t("packs.anyDuration") }, { v: "1-3", l: t("packs.days1to3") }, { v: "4-6", l: t("packs.days4to6") }, { v: "7+", l: t("packs.days7plus") }]}
+            <CustomSelect
+              label={t("packs.duration")}
+              value={draft.duration}
+              onChange={(v) => setDraft({ ...draft, duration: v })}
+              options={[
+                { value: "all", label: t("packs.anyDuration") },
+                { value: "1-3", label: t("packs.days1to3") },
+                { value: "4-6", label: t("packs.days4to6") },
+                { value: "7+", label: t("packs.days7plus") },
+              ]}
             />
-            <Select label={t("packs.price")} value={draft.price} onChange={(v) => setDraft({ ...draft, price: v })}
-              options={[{ v: "all", l: t("packs.anyPrice") }, { v: "lt400", l: t("packs.priceLt") }, { v: "400-700", l: t("packs.priceMid") }, { v: "gt700", l: t("packs.priceGt") }]}
+            <CustomSelect
+              label={t("packs.price")}
+              value={draft.price}
+              onChange={(v) => setDraft({ ...draft, price: v })}
+              options={[
+                { value: "all", label: t("packs.anyPrice") },
+                { value: "lt400", label: t("packs.priceLt") },
+                { value: "400-700", label: t("packs.priceMid") },
+                { value: "gt700", label: t("packs.priceGt") },
+              ]}
             />
-            <Select label={t("packs.city")} value={draft.city} onChange={(v) => setDraft({ ...draft, city: v })}
-              options={[{ v: "all", l: t("packs.anyCity") }, ...cities.map((c) => ({ v: c, l: t(`city.${c}` as const, { defaultValue: c }) }))]}
+            <CustomSelect
+              label={t("packs.city")}
+              value={draft.city}
+              onChange={(v) => setDraft({ ...draft, city: v })}
+              options={[
+                { value: "all", label: t("packs.anyCity") },
+                ...cities.map((c) => ({ value: c, label: t(`city.${c}` as const, { defaultValue: c }) })),
+              ]}
             />
-            <Select label={t("packs.expType")} value={draft.type} onChange={(v) => setDraft({ ...draft, type: v })}
-              options={[{ v: "all", l: t("packs.anyType") }, { v: "Cultural", l: t("packType.Cultural") }, { v: "Adventure", l: t("packType.Adventure") }, { v: "Luxury", l: t("packType.Luxury") }, { v: "Family", l: t("packType.Family") }]}
+            <CustomSelect
+              label={t("packs.expType")}
+              value={draft.type}
+              onChange={(v) => setDraft({ ...draft, type: v })}
+              options={[
+                { value: "all", label: t("packs.anyType") },
+                { value: "Cultural", label: t("packType.Cultural") },
+                { value: "Adventure", label: t("packType.Adventure") },
+                { value: "Luxury", label: t("packType.Luxury") },
+                { value: "Family", label: t("packType.Family") },
+              ]}
             />
             <button onClick={apply} className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-terracotta px-6 text-sm font-medium text-terracotta-foreground hover:brightness-110 self-end">
               <Filter className="h-4 w-4" /> {t("cta.filtrar")}

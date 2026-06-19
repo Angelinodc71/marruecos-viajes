@@ -53,7 +53,7 @@ export function CustomSelect({
         <div className="md:hidden flex items-center gap-3 rounded-xl bg-background border border-border px-4 py-2.5">
           {icon && <span className="text-terracotta shrink-0">{icon}</span>}
           <span className="flex-1 min-w-0">
-            <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold">
+            <span className="block truncate text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold">
               {label}
             </span>
             <select
@@ -79,7 +79,7 @@ export function CustomSelect({
         >
           {icon && <span className="text-terracotta shrink-0">{icon}</span>}
           <span className="flex-1 min-w-0">
-            <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold">
+            <span className="block truncate text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold">
               {label}
             </span>
             <span className={`block text-sm truncate ${isPlaceholder ? "text-muted-foreground" : "text-foreground"}`}>

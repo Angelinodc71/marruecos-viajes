@@ -8,6 +8,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { useFormatPrice } from "@/lib/format";
 import { useStays } from "@/hooks/useStays";
 import { CardSkeleton } from "@/components/skeleton/CardSkeleton";
+import { CustomSelect } from "@/components/ui/CustomSelect";
 
 function AlojamientosContent() {
   const { t } = useTranslation();
@@ -59,18 +60,24 @@ function AlojamientosContent() {
       <section className="container-page">
         <div className="rounded-2xl border border-border bg-card p-4 md:p-5 shadow-soft">
           <div className="grid gap-3 md:grid-cols-[1fr_1fr_1.2fr_auto]">
-            <Select label={t("stays.destination")} value={draft.city} onChange={(v) => setDraft({ ...draft, city: v })}
+            <CustomSelect
+              label={t("stays.destination")}
+              value={draft.city}
+              onChange={(v) => setDraft({ ...draft, city: v })}
               options={[
-                { v: "all", l: t("stays.anyDest") },
-                ...cities.map((c) => ({ v: c, l: t(`city.${c}` as const, { defaultValue: c }) })),
+                { value: "all", label: t("stays.anyDest") },
+                ...cities.map((c) => ({ value: c, label: t(`city.${c}` as const, { defaultValue: c }) })),
               ]}
             />
-            <Select label={t("stays.typeLabel")} value={draft.type} onChange={(v) => setDraft({ ...draft, type: v })}
+            <CustomSelect
+              label={t("stays.typeLabel")}
+              value={draft.type}
+              onChange={(v) => setDraft({ ...draft, type: v })}
               options={[
-                { v: "all", l: t("stays.anyTypeLabel") },
-                { v: "Riad", l: t("stayType.Riad") },
-                { v: "Hotel", l: t("stayType.Hotel") },
-                { v: "Boutique", l: t("stayType.Boutique") },
+                { value: "all", label: t("stays.anyTypeLabel") },
+                { value: "Riad", label: t("stayType.Riad") },
+                { value: "Hotel", label: t("stayType.Hotel") },
+                { value: "Boutique", label: t("stayType.Boutique") },
               ]}
             />
             <div className="flex flex-col gap-1">

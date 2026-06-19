@@ -33,6 +33,14 @@ export function LanguageSwitcher() {
     ? (LANGS.find((l) => l.code === i18n.resolvedLanguage) ?? LANGS[0])
     : LANGS[0];
 
+  const handleSelect = (code: string) => {
+    i18n.changeLanguage(code);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("i18nextLng", code);
+    }
+    setOpen(false);
+  };
+
   return (
     <div ref={ref} className="relative">
       <button
@@ -53,7 +61,7 @@ export function LanguageSwitcher() {
             <button
               key={l.code}
               type="button"
-              onClick={() => { i18n.changeLanguage(l.code); setOpen(false); }}
+              onClick={() => handleSelect(l.code)}
               className="flex w-full items-center justify-between px-3 py-2 text-sm hover:bg-accent"
             >
               <span className="flex items-center gap-2">

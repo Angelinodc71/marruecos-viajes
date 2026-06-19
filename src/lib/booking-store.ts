@@ -4,6 +4,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 export type BookingState = {
   people: string;
   date: string;
+  dateBack: string;
   itemName: string;
   itemType: "pack" | "stay" | "experience" | "";
   packSlug: string;
@@ -19,6 +20,7 @@ type BookingActions = {
 const defaults: BookingState = {
   people: "1",
   date: "",
+  dateBack: "",
   itemName: "",
   itemType: "",
   packSlug: "",

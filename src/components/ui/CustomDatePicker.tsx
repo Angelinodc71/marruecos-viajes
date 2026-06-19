@@ -204,7 +204,7 @@ export function CustomDatePicker({
           {hiddenInput}
           {icon && <span className="text-terracotta shrink-0 flex items-center pointer-events-none">{icon}</span>}
           <div className="flex flex-col flex-1 min-w-0 justify-center pointer-events-none">
-            <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold leading-none mb-0.5">
+            <span className="block truncate text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold leading-none mb-0.5">
               {label}
             </span>
             <span className={`text-sm ${value ? "text-foreground" : "text-muted-foreground"}`}>
@@ -226,7 +226,7 @@ export function CustomDatePicker({
         >
           {icon && <span className="text-terracotta shrink-0">{icon}</span>}
           <span className="flex-1 min-w-0">
-            <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold">
+            <span className="block truncate text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold">
               {label}
             </span>
             <span className={`block text-sm truncate ${value ? "text-foreground" : "text-muted-foreground"}`}>

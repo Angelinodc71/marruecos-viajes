@@ -6,21 +6,36 @@ import { PageHero } from "@/components/layout/PageHero";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { CustomDatePicker } from "@/components/ui/CustomDatePicker";
 import { useBookingStore } from "@/lib/booking-store";
+import { useSiteSettings } from "@/hooks/useSettings";
 import { toInputValue } from "@/hooks/useDate";
+
+const FALLBACK_EMAIL = "zahraa.travel1@gmail.com";
+const FALLBACK_PHONE = "+212 600 123 456";
 
 export default function ContactoPage() {
   const { t, i18n } = useTranslation();
   const lng = (i18n.resolvedLanguage ?? "es") as string;
 
-  const { people: storedPeople, date: storedDate, itemName, itemType, clear } = useBookingStore();
+  const {
+    people: storedPeople,
+    date: storedDate,
+    dateBack: storedDateBack,
+    itemName,
+    itemType,
+    clear,
+  } = useBookingStore();
+  const { data: settings } = useSiteSettings();
+
+  const email = settings?.email || FALLBACK_EMAIL;
+  const phone = settings?.phone || FALLBACK_PHONE;
 
   const [sent, setSent] = useState(false);
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [formEmail, setFormEmail] = useState("");
+  const [formPhone, setFormPhone] = useState("");
   const [people, setPeople] = useState(storedPeople || "1");
   const [dateOut, setDateOut] = useState<Date | null>(storedDate ? new Date(storedDate) : null);
-  const [dateBack, setDateBack] = useState<Date | null>(null);
+  const [dateBack, setDateBack] = useState<Date | null>(storedDateBack ? new Date(storedDateBack) : null);
   const [tripType, setTripType] = useState(() => {
     if (itemType === "pack") return "t1";
     if (itemType === "stay") return "t2";
@@ -50,8 +65,8 @@ export default function ContactoPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
-          email,
-          phone,
+          email: formEmail,
+          phone: formPhone,
           people,
           dateOut: dateOut ? toInputValue(dateOut) : null,
           dateBack: dateBack ? toInputValue(dateBack) : null,
@@ -129,16 +144,16 @@ export default function ContactoPage() {
               <input
                 required
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formEmail}
+                onChange={(e) => setFormEmail(e.target.value)}
                 className="field-input"
                 placeholder="email@..."
               />
             </Field>
             <Field label={t("contact.phone")}>
               <input
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                value={formPhone}
+                onChange={(e) => setFormPhone(e.target.value)}
                 className="field-input"
                 placeholder="+34 ..."
               />
@@ -209,12 +224,12 @@ export default function ContactoPage() {
           <InfoCard
             icon={<Mail className="h-5 w-5" />}
             title={t("contact.email")}
-            lines={["hola@marruecosviajes.com"]}
+            lines={[email]}
           />
           <InfoCard
             icon={<Phone className="h-5 w-5" />}
             title={`${t("contact.phone")} / WhatsApp`}
-            lines={["+212 600 123 456"]}
+            lines={[phone]}
           />
           <InfoCard
             icon={<MapPin className="h-5 w-5" />}
@@ -263,3 +278,4 @@ function InfoCard({ icon, title, lines }: { icon: React.ReactNode; title: string
     </div>
   );
 }
+

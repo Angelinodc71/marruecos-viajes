@@ -3,11 +3,19 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { Facebook, Instagram, Mail, MapPin, Phone, Send } from "lucide-react";
 import { useDestinations } from "@/hooks/useDestinations";
+import { useSiteSettings } from "@/hooks/useSettings";
 import { Logo } from "./Logo";
+
+const FALLBACK_EMAIL = "zahraa.travel1@gmail.com";
+const FALLBACK_PHONE = "+212 600 123 456";
 
 export function Footer() {
   const { t } = useTranslation();
   const { data: destinations } = useDestinations();
+  const { data: settings } = useSiteSettings();
+
+  const email = settings?.email || FALLBACK_EMAIL;
+  const phone = settings?.phone || FALLBACK_PHONE;
 
   return (
     <footer className="mt-24 border-t border-border bg-cream">
@@ -31,7 +39,7 @@ export function Footer() {
             <a aria-label="Facebook" href="#" className="h-9 w-9 grid place-items-center rounded-full border border-border hover:border-terracotta hover:text-terracotta transition">
               <Facebook className="h-4 w-4" />
             </a>
-            <a aria-label="Email" href="mailto:hola@marruecosviajes.com" className="h-9 w-9 grid place-items-center rounded-full border border-border hover:border-terracotta hover:text-terracotta transition">
+            <a aria-label="Email" href={`mailto:${email}`} className="h-9 w-9 grid place-items-center rounded-full border border-border hover:border-terracotta hover:text-terracotta transition">
               <Mail className="h-4 w-4" />
             </a>
           </div>
@@ -71,8 +79,8 @@ export function Footer() {
             </button>
           </form>
           <ul className="mt-6 space-y-2 text-xs text-muted-foreground">
-            <li className="flex items-center gap-2"><Phone className="h-3.5 w-3.5" /> +212 600 123 456</li>
-            <li className="flex items-center gap-2"><Mail className="h-3.5 w-3.5" /> hola@marruecosviajes.com</li>
+            <li className="flex items-center gap-2"><Phone className="h-3.5 w-3.5" /> {phone}</li>
+            <li className="flex items-center gap-2"><Mail className="h-3.5 w-3.5" /> {email}</li>
             <li className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5" /> Marrakech, Marruecos</li>
           </ul>
         </div>
